@@ -202,7 +202,8 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${YELLOW} Execution ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 
-
+systemctl enable schleuder-web.service 
+ 
 systemctl start schleuder-web.service 
 
 echo -e "${BLUE} Visit http://$(hostname -I|awk '{print $1}'):3000/${NORMAL}"
