@@ -53,7 +53,7 @@ SCHLEUDER_API_PORT="4443"
 $SUDO apt-get update && $SUDO apt-get upgrade -y
 echo -e "${Red} Installation des applications ${NORMAL}"
 $SUDO apt-get install -y schleuder 
-curl -sL https://raw.githubusercontent.com/CyBerNetX/schleuder-web-debian-sh/main/install.sh |bash -s --
+
 $SUDO apt install -y ruby-bundler libxml2-dev zlib1g-dev libsqlite3-dev ruby-full build-essential git ruby-dev openssl libssl-dev
 
 $SUDO  sed -i "s/host: localhost/host: ${SCHLEUDER_API_HOST}/g"  ${SCHLEUDER}schleuder.yml
