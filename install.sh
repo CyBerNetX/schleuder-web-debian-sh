@@ -108,7 +108,7 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${YELLOW} Déploiement source schleuder-web ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 
-git clone https://0xacab.org/schleuder/schleuder-web/
+$SUDO git clone https://0xacab.org/schleuder/schleuder-web/
 $SUDO chown -R schleuder:root /var/www/schleuder-web
 [[ ! -e /var/www/schleuder-web/tmp ]] && mkdir -p /var/www/schleuder-web/tmp
 $SUDO chown -R schleuder:root /var/www/schleuder-web/tmp
