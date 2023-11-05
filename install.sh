@@ -1,12 +1,12 @@
 #!/bin/bash
 #
-# curl -k https://cybermazout.net/nextcloud/s/pMY9pBQWkAwDiyq/download/schleuder-web.sh|sudo bash
+# curl -sL https://raw.githubusercontent.com/CyBerNetX/schleuder-web-debian-sh/main/install.sh |bash -s --
 # http://192.168.1.123:3000
 #
 # sudo systemctl status schleuder-api-daemon.service
 # sudo systemctl status schleuder-web.service 
 #
-
+SUDO=/usr/bin/sudo
 #
 NORMAL=`echo "\033[m"`
 BLUE=`echo "\033[36m"` #Blue
@@ -50,38 +50,38 @@ SCHLEUDER_WEB_SERVICE="/etc/systemd/system/schleuder-web.service"
 SCHLEUDER_API_HOST="127.0.0.1"
 SCHLEUDER_API_PORT="4443"
 
-apt-get update && apt-get upgrade -y
+$SUDO apt-get update && $SUDO apt-get upgrade -y
 echo -e "${Red} Installation des applications ${NORMAL}"
-apt-get install -y schleuder 
+$SUDO apt-get install -y schleuder 
+curl -sL https://raw.githubusercontent.com/CyBerNetX/schleuder-web-debian-sh/main/install.sh |bash -s --
+$SUDO apt install -y ruby-bundler libxml2-dev zlib1g-dev libsqlite3-dev ruby-full build-essential git ruby-dev openssl libssl-dev
 
-apt install -y ruby-bundler libxml2-dev zlib1g-dev libsqlite3-dev ruby-full build-essential git ruby-dev openssl libssl-dev
+$SUDO  sed -i "s/host: localhost/host: ${SCHLEUDER_API_HOST}/g"  ${SCHLEUDER}schleuder.yml
+$SUDO  sed -i "s/port: 4443/port: ${SCHLEUDER_API_PORT}/g"  ${SCHLEUDER}schleuder.yml
 
-sudo sed -i "s/host: localhost/host: ${SCHLEUDER_API_HOST}/g"  ${SCHLEUDER}schleuder.yml
-sudo sed -i "s/port: 4443/port: ${SCHLEUDER_API_PORT}/g"  ${SCHLEUDER}schleuder.yml
-
-systemctl restart schleuder-api-daemon.service
+$SUDO systemctl restart schleuder-api-daemon.service
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${YELLOW}  Config postfix pour schleuder ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 
 
-[[ -z $(grep schleuder /etc/postfix/master.cf) ]] && (	echo -e "schleuder  unix  -       n       n       -       -       pipe\n  flags=DRhu user=schleuder argv=/path/to/bin/schleuder work ${recipient}"|sudo tee -a  /etc/postfix/master.cf)
+[[ -z $(grep schleuder /etc/postfix/master.cf) ]] && (echo -e "schleuder  unix  -       n       n       -       -       pipe\n  flags=DRhu user=schleuder argv=/path/to/bin/schleuder work ${recipient}"|$SUDO  tee -a  /etc/postfix/master.cf)
 
 [[ -z $(grep schleuder /etc/postfix/main.cf) ]] && ( echo -e " \n
 schleuder_destination_recipient_limit = 1\n\
 virtual_mailbox_domains = sqlite:/etc/postfix/schleuder_domain_sqlite.cf\n\
 virtual_transport       = schleuder\n\
 virtual_alias_maps      = hash:/etc/postfix/virtual_aliases\n\
-virtual_mailbox_maps    = sqlite:/etc/postfix/schleuder_list_sqlite.cf"|sudo tee -a /etc/postfix/main.cf)
+virtual_mailbox_maps    = sqlite:/etc/postfix/schleuder_list_sqlite.cf"|$SUDO  tee -a /etc/postfix/main.cf)
 
-[[ ! -e /etc/postfix/schleuder_domain_sqlite.cf ]] && cat <<EOF |sudo tee -a /etc/postfix/schleuder_domain_sqlite.cf 
+[[ ! -e /etc/postfix/schleuder_domain_sqlite.cf ]] && cat <<EOF |$SUDO  tee -a /etc/postfix/schleuder_domain_sqlite.cf 
 dbpath = /var/lib/schleuder/db.sqlite
 query = select distinct substr(email, instr(email, '@') + 1) from lists
         where email like '%%%s'
 EOF
 
-[[ ! -e /etc/postfix/schleuder_list_sqlite.cf ]] && cat <<AOF |sudo tee -a /etc/postfix/schleuder_list_sqlite.cf 
+[[ ! -e /etc/postfix/schleuder_list_sqlite.cf ]] && cat <<AOF |$SUDO  tee -a /etc/postfix/schleuder_list_sqlite.cf 
 dbpath = /var/lib/schleuder/db.sqlite
 query = select 'present' from lists
           where email = '%s'
@@ -92,14 +92,14 @@ query = select 'present' from lists
 AOF
 
 
-[[ ! -e /etc/postfix/virtual_aliases ]] && cat <<BOF |sudo tee -a /etc/postfix/virtual_aliases 
+[[ ! -e /etc/postfix/virtual_aliases ]] && cat <<BOF |$SUDO  tee -a /etc/postfix/virtual_aliases 
 postmaster@lists.example.org    root@anotherdomain
 abuse@lists.example.org         root@anotherdomain
 MAILER-DAEMON@lists.example.org root@anotherdomain
 root@lists.example.org          root@anotherdomain
 BOF
 
-systemctl restart postfix
+$SUDO systemctl restart postfix
 mkdir -p /var/www/
 cd /var/www/
 
@@ -109,10 +109,10 @@ echo -e "${YELLOW} Déploiement source schleuder-web ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 
 git clone https://0xacab.org/schleuder/schleuder-web/
-chown -R schleuder:root /var/www/schleuder-web
+$SUDO chown -R schleuder:root /var/www/schleuder-web
 [[ ! -e /var/www/schleuder-web/tmp ]] && mkdir -p /var/www/schleuder-web/tmp
-chown -R schleuder:root /var/www/schleuder-web/tmp
-chmod 01755 /var/www/schleuder-web/tmp
+$SUDO chown -R schleuder:root /var/www/schleuder-web/tmp
+$SUDO chmod 01755 /var/www/schleuder-web/tmp
 cd schleuder-web
 echo -e "${Red} installation de schleuder-web : ${NORMAL}"
 
@@ -120,7 +120,8 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${YELLOW} Install ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 
-bundle install --without development
+#bundle install --without development
+bundle config set --local without 'development'
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${YELLOW} Creation SECRET_KEY_BASE ${NORMAL}"
@@ -135,26 +136,26 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${YELLOW} Creation SCHLEUDER_TLS_FINGERPRINT ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 
-export SCHLEUDER_TLS_FINGERPRINT=$(sudo schleuder cert fingerprint|cut -d" " -f4)
+export SCHLEUDER_TLS_FINGERPRINT=$($SUDO  schleuder cert fingerprint|cut -d" " -f4)
 
 
 echo -e "${Red} 
 SCHLEUDER_TLS_FINGERPRINT=$SCHLEUDER_TLS_FINGERPRINT${NORMAL}"
-systemctl restart schleuder-api-daemon.service
+$SUDO systemctl restart schleuder-api-daemon.service
 
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${YELLOW} Creation SCHLEUDER_API_KEY ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 
-export SCHLEUDER_API_KEY=$(sudo schleuder new_api_key)
-sed -i "s/# shared:/shared:\n  api_key: ${SCHLEUDER_API_KEY}/g" ${SCHLEUDER_WEB}config/secrets.yml
+export SCHLEUDER_API_KEY=$($SUDO  schleuder new_api_key)
+$SUDO sed -i "s/# shared:/shared:\n  api_key: ${SCHLEUDER_API_KEY}/g" ${SCHLEUDER_WEB}config/secrets.yml
 
 echo -e "${Red} SCHLEUDER_API_KEY=$SCHLEUDER_API_KEY${NORMAL}"
 
 
 
-sed -i "s/  valid_api_keys:/  valid_api_keys:\n    - ${SCHLEUDER_API_KEY}/g" ${SCHLEUDER}schleuder.yml
+$SUDO sed -i "s/  valid_api_keys:/  valid_api_keys:\n    - ${SCHLEUDER_API_KEY}/g" ${SCHLEUDER}schleuder.yml
 
 grep ${SCHLEUDER_API_KEY} ${SCHLEUDER}schleuder.yml
 
@@ -185,7 +186,7 @@ WorkingDirectory=${SCHLEUDER_WEB}
 User=schleuder
 ExecStart=${SCHLEUDER_WEB}bin/bundle exec rails server  
 [Install]
-WantedBy=multi-user.target" |  tee ${SCHLEUDER_WEB_SERVICE}
+WantedBy=multi-user.target" | $SUDO  tee ${SCHLEUDER_WEB_SERVICE}
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${YELLOW} Setup ${NORMAL}"
@@ -202,9 +203,9 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${YELLOW} Execution ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 
-systemctl enable schleuder-web.service 
+$SUDO systemctl enable schleuder-web.service 
  
-systemctl start schleuder-web.service 
+$SUDO systemctl start schleuder-web.service 
 
 echo -e "${BLUE} Visit http://$(hostname -I|awk '{print $1}'):3000/${NORMAL}"
 echo -e "${YELLOW} compte : root@localhost ${NORMAL}"
