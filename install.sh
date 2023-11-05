@@ -100,7 +100,7 @@ root@lists.example.org          root@anotherdomain
 BOF
 
 $SUDO systemctl restart postfix
-mkdir -p /var/www/
+$SUDO mkdir -p /var/www/
 cd /var/www/
 
 
@@ -122,6 +122,7 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 
 #bundle install --without development
 bundle config set --local without 'development'
+bundle install
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${YELLOW} Creation SECRET_KEY_BASE ${NORMAL}"
