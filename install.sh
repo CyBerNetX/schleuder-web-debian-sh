@@ -39,6 +39,25 @@ ${blue}                      |___/
 ${cyan} A Crypted mailing list for everyone 
 ${nc}"
 
+function usage(){
+        echo "$0 [-l liste.domain.exemple.org | -o domain.exemple.org ]"
+        echo "$0 -h "
+        echo "    help"
+        echo ""
+        exit 0
+        
+}
+
+while getopts l:o:h option
+do 
+case "${option}"
+        in
+        l) LISTS=${OPTARG};;
+        o) ORIGINDOMAIN=${OPTARG};;
+        h) usage ;;
+        *) usage ;;
+esac
+done
 
 
 echo -e "$logo"
@@ -93,10 +112,10 @@ AOF
 
 
 [[ ! -e /etc/postfix/virtual_aliases ]] && cat <<BOF |$SUDO  tee -a /etc/postfix/virtual_aliases 
-postmaster@lists.example.org    root@anotherdomain
-abuse@lists.example.org         root@anotherdomain
-MAILER-DAEMON@lists.example.org root@anotherdomain
-root@lists.example.org          root@anotherdomain
+postmaster@$LISTS    root@$ORIGINDOMAIN
+abuse@$LISTS         root@$ORIGINDOMAIN
+MAILER-DAEMON@$LISTS root@$ORIGINDOMAIN
+root@$LISTS          root@$ORIGINDOMAIN
 BOF
 
 $SUDO systemctl restart postfix
@@ -110,7 +129,7 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 
 $SUDO git clone https://0xacab.org/schleuder/schleuder-web/
 $SUDO chown -R schleuder:root /var/www/schleuder-web
-[[ ! -e /var/www/schleuder-web/tmp ]] && mkdir -p /var/www/schleuder-web/tmp
+[[ ! -e /var/www/schleuder-web/tmp ]] && $SUDO mkdir -p /var/www/schleuder-web/tmp
 $SUDO chown -R schleuder:root /var/www/schleuder-web/tmp
 $SUDO chmod 01755 /var/www/schleuder-web/tmp
 cd schleuder-web
