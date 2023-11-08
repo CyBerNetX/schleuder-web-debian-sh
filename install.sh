@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# curl -sL https://raw.githubusercontent.com/CyBerNetX/schleuder-web-debian-sh/main/install.sh |bash -s --
+# curl -sL https://raw.githubusercontent.com/CyBerNetX/schleuder-web-debian-sh/main/install.sh |bash -s -- -h
 # http://192.168.1.123:3000
 #
 # sudo systemctl status schleuder-api-daemon.service
@@ -40,7 +40,7 @@ ${cyan} A Crypted mailing list for everyone
 ${nc}"
 
 function usage(){
-        echo "$0 [-l liste.domain.exemple.org | -o domain.exemple.org ]"
+        echo "$0 [ -l liste.exemple.org | -o exemple.org ]"
         echo "$0 -h "
         echo "    help"
         echo ""
