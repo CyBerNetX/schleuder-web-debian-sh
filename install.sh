@@ -6,6 +6,8 @@
 # sudo systemctl status schleuder-api-daemon.service
 # sudo systemctl status schleuder-web.service 
 #
+LOGDIR="./log"
+LOG="$LOGDIR/Installation_schleuder-web_$(date +%F_%H%M%S).log"
 SUDO=/usr/bin/sudo
 #
 NORMAL=`echo "\033[m"`
@@ -38,6 +40,10 @@ ${blue}                 \____\__, |____/ \___|_|  |_| \_|\___|\__${green}/_/\_\
 ${blue}                      |___/                                     
 ${cyan} A Crypted mailing list for everyone 
 ${nc}"
+
+mkdir -p "$LOGDIR"
+exec &> $LOG
+
 
 function usage(){
         echo "$0 [ -l liste.exemple.org | -o exemple.org ]"
@@ -222,7 +228,7 @@ BOF
         echo -e "${YELLOW} Execution ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 3
-        
+
         $SUDO systemctl enable schleuder-web.service 
 
         $SUDO systemctl start schleuder-web.service 
