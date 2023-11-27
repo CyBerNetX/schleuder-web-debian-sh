@@ -237,7 +237,7 @@ BOF
         echo -e "${BLUE} Visit http://$(hostname -I|awk '{print $1}'):3000/${NORMAL}"
         echo -e "${YELLOW} compte : root@localhost ${NORMAL}"
         echo -e "${YELLOW} Password : slingit! ${NORMAL}"
-
+        exit 0
 }
 
 no_args="true"
