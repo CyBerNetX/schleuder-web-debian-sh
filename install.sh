@@ -42,7 +42,7 @@ ${cyan} A Crypted mailing list for everyone
 ${nc}"
 
 mkdir -p "$LOGDIR"
-exec &> $LOG
+exec > >(tee -a "$LOG" ) 2>&1
 
 
 function usage(){
