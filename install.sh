@@ -141,7 +141,7 @@ BOF
         sleep 3
 
         #bundle install --without development
-        bundle install --path $SCHLEUDER_WEB
+        bundle config set --local path $SCHLEUDER_WEB
         bundle config set --local without 'development'
         bundle install
 
