@@ -63,6 +63,7 @@ function main(){
 
         $SUDO apt-get update && $SUDO apt-get upgrade -y
         echo -e "${Red} Installation des applications ${NORMAL}"
+        sleep 3
         $SUDO apt-get install -y schleuder 
 
         $SUDO apt install -y ruby-bundler libxml2-dev zlib1g-dev libsqlite3-dev ruby-full build-essential git ruby-dev openssl libssl-dev
@@ -75,7 +76,7 @@ function main(){
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${YELLOW}  Config postfix pour schleuder ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-
+        sleep 3
 
         [[ -z $(grep schleuder /etc/postfix/master.cf) ]] && (echo -e "schleuder  unix  -       n       n       -       -       pipe\n  flags=DRhu user=schleuder argv=/path/to/bin/schleuder work ${recipient}"|$SUDO  tee -a  /etc/postfix/master.cf)
 
@@ -118,6 +119,7 @@ BOF
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${YELLOW} Déploiement source schleuder-web ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
+        sleep 3
 
         $SUDO git clone https://0xacab.org/schleuder/schleuder-web/
         $SUDO chown -R schleuder:root /var/www/schleuder-web
@@ -130,6 +132,7 @@ BOF
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${YELLOW} Install ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
+        sleep 3
 
         #bundle install --without development
         bundle config set --local without 'development'
@@ -138,7 +141,7 @@ BOF
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${YELLOW} Creation SECRET_KEY_BASE ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-
+        sleep 3
         export SECRET_KEY_BASE=$(bin/rails secret)
 
         echo -e "${Red} SECRET_KEY_BASE=$SECRET_KEY_BASE${NORMAL}"
@@ -147,7 +150,7 @@ BOF
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${YELLOW} Creation SCHLEUDER_TLS_FINGERPRINT ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-
+        sleep 3
         export SCHLEUDER_TLS_FINGERPRINT=$($SUDO  schleuder cert fingerprint|cut -d" " -f4)
 
 
@@ -159,7 +162,7 @@ BOF
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${YELLOW} Creation SCHLEUDER_API_KEY ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-
+        sleep 3
         export SCHLEUDER_API_KEY=$($SUDO  schleuder new_api_key)
         $SUDO sed -i "s/# shared:/shared:\n  api_key: ${SCHLEUDER_API_KEY}/g" ${SCHLEUDER_WEB}config/secrets.yml
 
@@ -176,6 +179,8 @@ BOF
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${YELLOW} Var schleuder-web ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
+        sleep 3
+
         echo -e "[Service]
         SCHLEUDER_API_HOST=$SCHLEUDER_API_HOST
         SCHLEUDER_API_PORT=$SCHLEUDER_API_PORT
@@ -203,18 +208,21 @@ BOF
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${YELLOW} Setup ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
+        sleep 3
 
         bundle exec rake db:setup RAILS_ENV=production
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${YELLOW} Précompile ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
+        sleep 3
 
         RAILS_ENV=production bundle exec rake assets:precompile
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${YELLOW} Execution ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-
+        sleep 3
+        
         $SUDO systemctl enable schleuder-web.service 
 
         $SUDO systemctl start schleuder-web.service 
