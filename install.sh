@@ -60,6 +60,7 @@ function usage(){
 function main(){
         echo -e "$logo"
         sleep 3
+        SCHLEUDER_BIN=$(whereis -b schleuder|cut -d" " -f2)
         SCHLEUDER_WEB="/var/www/schleuder-web/"
         SCHLEUDER="/etc/schleuder/"
         SCHLEUDER_WEB_VAR_DEFAULT="/etc/default/schleuder-web"
@@ -84,7 +85,7 @@ function main(){
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 3
 
-        [[ -z $(grep schleuder /etc/postfix/master.cf) ]] && (echo -e "schleuder  unix  -       n       n       -       -       pipe\n  flags=DRhu user=schleuder argv=/path/to/bin/schleuder work ${recipient}"|$SUDO  tee -a  /etc/postfix/master.cf)
+        [[ -z $(grep schleuder /etc/postfix/master.cf) ]] && (echo -e "schleuder  unix  -       n       n       -       -       pipe\n  flags=DRhu user=schleuder argv=$SCHLEUDER_BIN work ${recipient}"|$SUDO  tee -a  /etc/postfix/master.cf)
 
         [[ -z $(grep schleuder /etc/postfix/main.cf) ]] && ( echo -e " \n
         schleuder_destination_recipient_limit = 1\n\
