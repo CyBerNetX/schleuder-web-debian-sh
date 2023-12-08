@@ -6,4 +6,5 @@ todo
 (separer dans un script les commandes a lancer sous schleuder)
 - decaller les commandes sudo
 - faire remonter export des variable de schleuder web 
-- 
+(utilier source ./bundler_installation.sh)
+- source est une commande interne bash : ne passe pas avec su - : trouver une autre solution
