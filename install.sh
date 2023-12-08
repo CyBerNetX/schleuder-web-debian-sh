@@ -80,7 +80,7 @@ function main(){
         $SUDO systemctl restart schleuder-api-daemon.service
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        echo -e "${YELLOW}  Config postfix pour schleuder ${NORMAL}"
+        echo -e "${RED_TEXT}  Config postfix pour schleuder ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 3
 
@@ -123,7 +123,7 @@ BOF
 
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        echo -e "${YELLOW} Déploiement source schleuder-web ${NORMAL}"
+        echo -e "${RED_TEXT} Déploiement source schleuder-web ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 3
 
@@ -136,17 +136,18 @@ BOF
         echo -e "${Red} installation de schleuder-web : ${NORMAL}"
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        echo -e "${YELLOW} Install ${NORMAL}"
+        echo -e "${RED_TEXT} Install ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 3
 
         #bundle install --without development
+        bundle update --bundler
         bundle config set --local path $SCHLEUDER_WEB
         bundle config set --local without 'development'
         bundle install
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        echo -e "${YELLOW} Creation SECRET_KEY_BASE ${NORMAL}"
+        echo -e "${RED_TEXT} Creation SECRET_KEY_BASE ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 3
         export SECRET_KEY_BASE=$(bin/rails secret)
@@ -155,7 +156,7 @@ BOF
 
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        echo -e "${YELLOW} Creation SCHLEUDER_TLS_FINGERPRINT ${NORMAL}"
+        echo -e "${RED_TEXT} Creation SCHLEUDER_TLS_FINGERPRINT ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 3
         export SCHLEUDER_TLS_FINGERPRINT=$($SUDO  schleuder cert fingerprint|cut -d" " -f4)
@@ -167,7 +168,7 @@ BOF
 
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        echo -e "${YELLOW} Creation SCHLEUDER_API_KEY ${NORMAL}"
+        echo -e "${RED_TEXT} Creation SCHLEUDER_API_KEY ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 3
         export SCHLEUDER_API_KEY=$($SUDO  schleuder new_api_key)
@@ -184,7 +185,7 @@ BOF
 
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        echo -e "${YELLOW} Var schleuder-web ${NORMAL}"
+        echo -e "${RED_TEXT} Var schleuder-web ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 3
 
@@ -197,7 +198,7 @@ BOF
         RAILS_ENV=production" | tee ${SCHLEUDER_WEB_VAR_DEFAULT}
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        echo -e "${YELLOW} Service schleuder-web ${NORMAL}"
+        echo -e "${RED_TEXT} Service schleuder-web ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
 
         echo -e "[Unit]
@@ -213,20 +214,20 @@ BOF
         WantedBy=multi-user.target" | $SUDO  tee ${SCHLEUDER_WEB_SERVICE}
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        echo -e "${YELLOW} Setup ${NORMAL}"
+        echo -e "${RED_TEXT} Setup ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 3
 
         bundle exec rake db:setup RAILS_ENV=production
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        echo -e "${YELLOW} Précompile ${NORMAL}"
+        echo -e "${RED_TEXT} Précompile ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 3
 
         RAILS_ENV=production bundle exec rake assets:precompile
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        echo -e "${YELLOW} Execution ${NORMAL}"
+        echo -e "${RED_TEXT} Execution ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 3
 
