@@ -173,7 +173,7 @@ export SECRET_KEY_BASE=$(bin/rails secret)
 
 echo -e "${Red} SECRET_KEY_BASE=$SECRET_KEY_BASE${NORMAL}"
 echo -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" >>$VARTMP
-#---------- end user schleuder ---------#
+
 ROF
         chmod +x /tmp/schleuderwebA.sh
         $SUDO su - schleuder --shell=/bin/bash -c  /tmp/schleuderwebA.sh  
@@ -247,7 +247,6 @@ ROF
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
 [[ ! -e /tmp/schleuderwebB.sh ]] && cat <<SOF |$SUDO  tee -a /tmp/schleuderwebB.sh
-#---------- user schleuder ---------#
 NORMAL=`echo "\033[m"`
 BLUE=`echo "\033[36m"` #Blue
 YELLOW=`echo "\033[33m"` #yellow
@@ -267,7 +266,6 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 
 RAILS_ENV=production bundle exec rake assets:precompile
-#---------- end user schleuder ---------#
 SOF     
         chmod +x /tmp/schleuderwebB.sh
         $SUDO su - schleuder --shell=/bin/bash -c  /tmp/schleuderwebB.sh  
