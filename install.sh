@@ -139,6 +139,7 @@ function main_schleuderweb(){
         [[ ! -e /var/www/schleuder-web/tmp ]] && $SUDO mkdir -p /var/www/schleuder-web/tmp
         $SUDO chown -R schleuder:root /var/www/schleuder-web/tmp
         $SUDO chmod 01755 /var/www/schleuder-web/tmp
+        $SUDO usermod -aG sudo schleuder
         #---------- user schleuder ---------#
         exec $SUDO -u schleuder /bin/bash - <<'END_SWSA'
 NORMAL=`echo "\033[m"`
