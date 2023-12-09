@@ -49,6 +49,7 @@ function usage(){
         echo "$0 [ -l liste.exemple.org | -o exemple.org ]"
         echo " -l : liste domaine"
         echo " -o : domaine original "
+        echo " -s : sudo password "
         echo ""
         echo "$0 -h "
         echo "    help"
@@ -175,8 +176,8 @@ echo -e "${Red} SECRET_KEY_BASE=$SECRET_KEY_BASE${NORMAL}"
 echo -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" >>$VARTMP
 END_SWSA
         chmod +x /tmp/schleuderwebA.sh
-        $SUDO su - schleuder --shell=/bin/bash -c /tmp/schleuderwebA.sh  
-
+        $SUDO -A $ASKPASS su - schleuder --shell=/bin/bash -c /tmp/schleuderwebA.sh  
+        $
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Creation SCHLEUDER_TLS_FINGERPRINT ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
@@ -216,7 +217,7 @@ END_SWSA
         echo -e "${RED_TEXT} Var schleuder-web ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
-
+        . $VARTMP
         echo -e "[Service]
         SCHLEUDER_API_HOST=$SCHLEUDER_API_HOST
         SCHLEUDER_API_PORT=$SCHLEUDER_API_PORT
@@ -258,7 +259,7 @@ RAILS_ENV=production bundle exec rake assets:precompile
 END_SWSB
 
         chmod +x /tmp/schleuderwebB.sh
-        $SUDO su - schleuder --shell=/bin/bash -c /tmp/schleuderwebB.sh  
+        $SUDO -A $ASKPASS su - schleuder --shell=/bin/bash -c /tmp/schleuderwebB.sh  
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Execution ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
@@ -281,6 +282,7 @@ do
         in
         l) LISTS=${OPTARG};;
         o) ORIGINDOMAIN=${OPTARG};;
+        s) ASKPASS=${OPTARG};;
         h) usage ;;
         *) usage ;;
   esac
