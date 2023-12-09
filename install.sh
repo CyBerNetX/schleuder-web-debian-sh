@@ -247,19 +247,18 @@ ROF
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
         [[ ! -e /tmp/schleuderwebB.sh ]] && cat << SOF |$SUDO tee -a /tmp/schleuderwebB.sh
+        VARTMP="/tmp/schleuderweb_var.sh"
+        cd /var/www/
+        cd schleuder-web
+        bundle exec rake db:setup RAILS_ENV=production
+        echo -e "[==============================]"
+        echo -e "Précompile"
+        echo -e "[==============================]"
+        sleep 5
 
-VARTMP="/tmp/schleuderweb_var.sh"
-cd /var/www/
-cd schleuder-web
-bundle exec rake db:setup RAILS_ENV=production
-echo -e "[==============================]"
-echo -e "Précompile"
-echo -e "[==============================]"
-sleep 5
-
-RAILS_ENV=production bundle exec rake assets:precompile
-
+        RAILS_ENV=production bundle exec rake assets:precompile
 SOF     
+
         chmod +x /tmp/schleuderwebB.sh
         $SUDO su - schleuder --shell=/bin/bash -c /tmp/schleuderwebB.sh  
         echo -e "${YELLOW} [==============================] ${NORMAL}"
