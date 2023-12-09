@@ -139,7 +139,7 @@ function main_schleuderweb(){
         $SUDO chown -R schleuder:root /var/www/schleuder-web/tmp
         $SUDO chmod 01755 /var/www/schleuder-web/tmp
         #---------- user schleuder ---------#
-        [[ ! -e /tmp/schleuderwebA.sh ]] && cat <<ROF |$SUDO  tee -a /tmp/schleuderwebA.sh
+        [[ ! -e /tmp/schleuderwebA.sh ]] && cat << ROF |$SUDO  tee -a /tmp/schleuderwebA.sh
 NORMAL=`echo "\033[m"`
 BLUE=`echo "\033[36m"` #Blue
 YELLOW=`echo "\033[33m"` #yellow
@@ -246,7 +246,7 @@ ROF
         echo -e "${RED_TEXT} Setup ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
-        [[ ! -e /tmp/schleuderwebB.sh ]] && cat <<SOF |$SUDO  tee -a /tmp/schleuderwebB.sh
+        [[ ! -e /tmp/schleuderwebB.sh ]] && cat << SOF |$SUDO  tee -a /tmp/schleuderwebB.sh
 NORMAL=`echo "\033[m"`
 BLUE=`echo "\033[36m"` #Blue
 YELLOW=`echo "\033[33m"` #yellow
