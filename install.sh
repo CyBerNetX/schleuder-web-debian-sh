@@ -176,7 +176,7 @@ echo -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" >>$VARTMP
 
 ROF
         chmod +x /tmp/schleuderwebA.sh
-        $SUDO su - schleuder --shell=/bin/bash -c  /tmp/schleuderwebA.sh  
+        $SUDO su - schleuder --shell=/bin/bash -c /tmp/schleuderwebA.sh  
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Creation SCHLEUDER_TLS_FINGERPRINT ${NORMAL}"
@@ -269,7 +269,7 @@ RAILS_ENV=production bundle exec rake assets:precompile
 
 SOF     
         chmod +x /tmp/schleuderwebB.sh
-        $SUDO su - schleuder --shell=/bin/bash -c  /tmp/schleuderwebB.sh  
+        $SUDO su - schleuder --shell=/bin/bash -c /tmp/schleuderwebB.sh  
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Execution ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
