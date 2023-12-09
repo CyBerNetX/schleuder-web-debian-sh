@@ -246,23 +246,15 @@ ROF
         echo -e "${RED_TEXT} Setup ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
-        [[ ! -e /tmp/schleuderwebB.sh ]] && cat << SOF |$SUDO  tee -a /tmp/schleuderwebB.sh
-NORMAL=`echo "\033[m"`
-BLUE=`echo "\033[36m"` #Blue
-YELLOW=`echo "\033[33m"` #yellow
-FGRED=`echo "\033[41m"`
-RED_TEXT=`echo "\033[31m"`
-ENTER_LINE=`echo "\033[33m"`
-Red=`echo "\033[0;31m"`
-Green=`echo "\033[32m"`
+        [[ ! -e /tmp/schleuderwebB.sh ]] && cat << SOF |$SUDO tee -a /tmp/schleuderwebB.sh
 
 VARTMP="/tmp/schleuderweb_var.sh"
 cd /var/www/
 cd schleuder-web
 bundle exec rake db:setup RAILS_ENV=production
-echo -e "${YELLOW} [==============================] ${NORMAL}"
-echo -e "${RED_TEXT} Précompile ${NORMAL}"
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "[==============================]"
+echo -e "Précompile"
+echo -e "[==============================]"
 sleep 5
 
 RAILS_ENV=production bundle exec rake assets:precompile
