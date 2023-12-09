@@ -255,6 +255,7 @@ echo -e "[==============================]"
 sleep 5
 
 RAILS_ENV=production bundle exec rake assets:precompile
+
 END_SWSB
 
         chmod +x /tmp/schleuderwebB.sh
