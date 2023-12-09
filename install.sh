@@ -95,27 +95,27 @@ function main_schleuder(){
         virtual_mailbox_maps    = sqlite:/etc/postfix/schleuder_list_sqlite.cf"|$SUDO  tee -a /etc/postfix/main.cf)
 
         [[ ! -e /etc/postfix/schleuder_domain_sqlite.cf ]] && cat << EOF |$SUDO  tee -a /etc/postfix/schleuder_domain_sqlite.cf 
-        dbpath = /var/lib/schleuder/db.sqlite
-        query = select distinct substr(email, instr(email, '@') + 1) from lists
-        where email like '%%%s'
+dbpath = /var/lib/schleuder/db.sqlite
+query = select distinct substr(email, instr(email, '@') + 1) from lists
+where email like '%%%s'
 EOF
 
         [[ ! -e /etc/postfix/schleuder_list_sqlite.cf ]] && cat <<AOF |$SUDO  tee -a /etc/postfix/schleuder_list_sqlite.cf 
-        dbpath = /var/lib/schleuder/db.sqlite
-        query = select 'present' from lists
-        where email = '%s'
-        or    email = replace('%s', '-bounce@', '@')
-        or    email = replace('%s', '-owner@', '@')
-        or    email = replace('%s', '-request@', '@')
-        or    email = replace('%s', '-sendkey@', '@')
+dbpath = /var/lib/schleuder/db.sqlite
+query = select 'present' from lists
+where email = '%s'
+or    email = replace('%s', '-bounce@', '@')
+or    email = replace('%s', '-owner@', '@')
+or    email = replace('%s', '-request@', '@')
+or    email = replace('%s', '-sendkey@', '@')
 AOF
 
 
         [[ ! -e /etc/postfix/virtual_aliases ]] && cat <<BOF |$SUDO  tee -a /etc/postfix/virtual_aliases 
-        postmaster@$LISTS    root@$ORIGINDOMAIN
-        abuse@$LISTS         root@$ORIGINDOMAIN
-        MAILER-DAEMON@$LISTS root@$ORIGINDOMAIN
-        root@$LISTS          root@$ORIGINDOMAIN
+postmaster@$LISTS    root@$ORIGINDOMAIN
+abuse@$LISTS         root@$ORIGINDOMAIN
+MAILER-DAEMON@$LISTS root@$ORIGINDOMAIN
+root@$LISTS          root@$ORIGINDOMAIN
 BOF
 
         $SUDO postmap /etc/postfix/virtual_aliases
@@ -139,7 +139,7 @@ function main_schleuderweb(){
         $SUDO chown -R schleuder:root /var/www/schleuder-web/tmp
         $SUDO chmod 01755 /var/www/schleuder-web/tmp
         #---------- user schleuder ---------#
-cat <<ROF |$SUDO  tee -a /tmp/schleuderwebA.sh
+[[ ! -e /tmp/schleuderwebA.sh ]] && cat <<ROF |$SUDO  tee -a /tmp/schleuderwebA.sh
 NORMAL=`echo "\033[m"`
 BLUE=`echo "\033[36m"` #Blue
 YELLOW=`echo "\033[33m"` #yellow
@@ -176,7 +176,7 @@ echo -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" >>$VARTMP
 #---------- end user schleuder ---------#
 ROF
         chmod +x /tmp/schleuderwebA.sh
-        su - schleuder --shell=/bin/bash -c  /tmp/schleuderwebA.sh  
+        $SUDO su - schleuder --shell=/bin/bash -c  /tmp/schleuderwebA.sh  
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Creation SCHLEUDER_TLS_FINGERPRINT ${NORMAL}"
@@ -246,7 +246,7 @@ ROF
         echo -e "${RED_TEXT} Setup ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
-        cat <<SOF |$SUDO  tee -a /tmp/schleuderwebB.sh
+[[ ! -e /tmp/schleuderwebB.sh ]] && cat <<SOF |$SUDO  tee -a /tmp/schleuderwebB.sh
 #---------- user schleuder ---------#
 NORMAL=`echo "\033[m"`
 BLUE=`echo "\033[36m"` #Blue
@@ -270,7 +270,7 @@ RAILS_ENV=production bundle exec rake assets:precompile
 #---------- end user schleuder ---------#
 SOF     
         chmod +x /tmp/schleuderwebB.sh
-        su - schleuder --shell=/bin/bash -c  /tmp/schleuderwebB.sh  
+        $SUDO su - schleuder --shell=/bin/bash -c  /tmp/schleuderwebB.sh  
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Execution ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
