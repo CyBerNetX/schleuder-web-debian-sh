@@ -69,8 +69,16 @@ function main_schleuder(){
         SCHLEUDER_API_HOST="127.0.0.1"
         SCHLEUDER_API_PORT="4443"
 
+        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${Red} Updates et upgrades ${NORMAL}"
+        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        sleep 5
+
         $SUDO apt-get update && $SUDO apt-get upgrade -y
+
+        echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${Red} Installation des applications ${NORMAL}"
+        echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
         $SUDO apt-get install -y schleuder 
 
@@ -139,7 +147,7 @@ function main_schleuderweb(){
         [[ ! -e /var/www/schleuder-web/tmp ]] && $SUDO mkdir -p /var/www/schleuder-web/tmp
         $SUDO chown -R schleuder:root /var/www/schleuder-web/tmp
         $SUDO chmod 01755 /var/www/schleuder-web/tmp
-        $SUDO echo "schleuder   ALL=NOPASSWD: ALL" >> /etc/sudoers;
+        echo "schleuder   ALL=NOPASSWD: ALL" |$SUDO  tee -a  /etc/sudoers.d/schleuder;
 
         #---------- user schleuder ---------#
         exec $SUDO -u schleuder /bin/bash - <<'END_SWSA'
