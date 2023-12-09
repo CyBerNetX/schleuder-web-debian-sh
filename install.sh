@@ -139,7 +139,7 @@ function main_schleuderweb(){
         $SUDO chown -R schleuder:root /var/www/schleuder-web/tmp
         $SUDO chmod 01755 /var/www/schleuder-web/tmp
         #---------- user schleuder ---------#
-        [[ ! -e /tmp/schleuderwebA.sh ]] && cat << ROF |$SUDO  tee -a /tmp/schleuderwebA.sh
+        [[ ! -e /tmp/schleuderwebA.sh ]] && cat << END_SWSA |$SUDO  tee -a /tmp/schleuderwebA.sh
 NORMAL=`echo "\033[m"`
 BLUE=`echo "\033[36m"` #Blue
 YELLOW=`echo "\033[33m"` #yellow
@@ -173,8 +173,7 @@ export SECRET_KEY_BASE=$(bin/rails secret)
 
 echo -e "${Red} SECRET_KEY_BASE=$SECRET_KEY_BASE${NORMAL}"
 echo -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" >>$VARTMP
-
-ROF
+END_SWSA
         chmod +x /tmp/schleuderwebA.sh
         $SUDO su - schleuder --shell=/bin/bash -c /tmp/schleuderwebA.sh  
 
@@ -246,18 +245,18 @@ ROF
         echo -e "${RED_TEXT} Setup ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
-        [[ ! -e /tmp/schleuderwebB.sh ]] && cat << SOF |$SUDO tee -a /tmp/schleuderwebB.sh
-        VARTMP="/tmp/schleuderweb_var.sh"
-        cd /var/www/
-        cd schleuder-web
-        bundle exec rake db:setup RAILS_ENV=production
-        echo -e "[==============================]"
-        echo -e "Précompile"
-        echo -e "[==============================]"
-        sleep 5
+        [[ ! -e /tmp/schleuderwebB.sh ]] && cat << END_SWSB |$SUDO tee -a /tmp/schleuderwebB.sh
+VARTMP="/tmp/schleuderweb_var.sh"
+cd /var/www/
+cd schleuder-web
+bundle exec rake db:setup RAILS_ENV=production
+echo -e "[==============================]"
+echo -e "Précompile"
+echo -e "[==============================]"
+sleep 5
 
-        RAILS_ENV=production bundle exec rake assets:precompile
-SOF     
+RAILS_ENV=production bundle exec rake assets:precompile
+END_SWSB    
 
         chmod +x /tmp/schleuderwebB.sh
         $SUDO su - schleuder --shell=/bin/bash -c /tmp/schleuderwebB.sh  
