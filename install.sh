@@ -139,7 +139,7 @@ function main_schleuderweb(){
         $SUDO chown -R schleuder:root /var/www/schleuder-web/tmp
         $SUDO chmod 01755 /var/www/schleuder-web/tmp
         #---------- user schleuder ---------#
-        [[ ! -e /tmp/schleuderwebA.sh ]] && cat <<END_SWSA |$SUDO  tee -a /tmp/schleuderwebA.sh
+        [[ ! -e /tmp/schleuderwebA.sh ]] && cat <<'END_SWSA' >/tmp/schleuderwebA.sh
 NORMAL=`echo "\033[m"`
 BLUE=`echo "\033[36m"` #Blue
 YELLOW=`echo "\033[33m"` #yellow
@@ -245,7 +245,7 @@ END_SWSA
         echo -e "${RED_TEXT} Setup ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
-        [[ ! -e /tmp/schleuderwebB.sh ]] && cat <<END_SWSB |$SUDO tee -a /tmp/schleuderwebB.sh
+        [[ ! -e /tmp/schleuderwebB.sh ]] && cat <<'END_SWSB' >/tmp/schleuderwebB.sh
 cd /var/www/
 cd schleuder-web
 bundle exec rake db:setup RAILS_ENV=production
@@ -255,7 +255,6 @@ echo -e "[==============================]"
 sleep 5
 
 RAILS_ENV=production bundle exec rake assets:precompile
-
 END_SWSB
 
         chmod +x /tmp/schleuderwebB.sh
