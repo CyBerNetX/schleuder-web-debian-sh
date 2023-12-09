@@ -140,7 +140,7 @@ function main_schleuderweb(){
         $SUDO chown -R schleuder:root /var/www/schleuder-web/tmp
         $SUDO chmod 01755 /var/www/schleuder-web/tmp
         #---------- user schleuder ---------#
-        [[ ! -e /tmp/schleuderwebA.sh ]] && cat <<'END_SWSA' >/tmp/schleuderwebA.sh
+        exec $SUDO -u schleuder /bin/bash - <<'END_SWSA'
 NORMAL=`echo "\033[m"`
 BLUE=`echo "\033[36m"` #Blue
 YELLOW=`echo "\033[33m"` #yellow
@@ -175,9 +175,8 @@ export SECRET_KEY_BASE=$(bin/rails secret)
 echo -e "${Red} SECRET_KEY_BASE=$SECRET_KEY_BASE${NORMAL}"
 echo -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" >>$VARTMP
 END_SWSA
-        chmod +x /tmp/schleuderwebA.sh
-        $SUDO -A $ASKPASS su - schleuder --shell=/bin/bash -c /tmp/schleuderwebA.sh  
-        $
+        
+        
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Creation SCHLEUDER_TLS_FINGERPRINT ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
@@ -246,20 +245,27 @@ END_SWSA
         echo -e "${RED_TEXT} Setup ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
-        [[ ! -e /tmp/schleuderwebB.sh ]] && cat <<'END_SWSB' >/tmp/schleuderwebB.sh
+        exec $SUDO -u schleuder /bin/bash - <<'END_SWSB'
+NORMAL=`echo "\033[m"`
+BLUE=`echo "\033[36m"` #Blue
+YELLOW=`echo "\033[33m"` #yellow
+FGRED=`echo "\033[41m"`
+RED_TEXT=`echo "\033[31m"`
+ENTER_LINE=`echo "\033[33m"`
+Red=`echo "\033[0;31m"`
+Green=`echo "\033[32m"`
+
 cd /var/www/
 cd schleuder-web
 bundle exec rake db:setup RAILS_ENV=production
-echo -e "[==============================]"
-echo -e "Precompile"
-echo -e "[==============================]"
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${RED_TEXT} Precompile ${NORMAL}"
+echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 
 RAILS_ENV=production bundle exec rake assets:precompile
 END_SWSB
 
-        chmod +x /tmp/schleuderwebB.sh
-        $SUDO -A $ASKPASS su - schleuder --shell=/bin/bash -c /tmp/schleuderwebB.sh  
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Execution ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
