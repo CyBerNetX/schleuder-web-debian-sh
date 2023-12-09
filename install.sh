@@ -57,9 +57,9 @@ function usage(){
 }
 
 
-function main(){
+function main_schleuder(){
         echo -e "$logo"
-        sleep 3
+        sleep 5
         SCHLEUDER_BIN=$(whereis -b schleuder|cut -d" " -f2)
         SCHLEUDER_WEB="/var/www/schleuder-web/"
         SCHLEUDER="/etc/schleuder/"
@@ -70,7 +70,7 @@ function main(){
 
         $SUDO apt-get update && $SUDO apt-get upgrade -y
         echo -e "${Red} Installation des applications ${NORMAL}"
-        sleep 3
+        sleep 5
         $SUDO apt-get install -y schleuder 
 
         $SUDO apt install -y ruby-bundler libxml2-dev zlib1g-dev libsqlite3-dev ruby-full build-essential git ruby-dev openssl libssl-dev
@@ -83,7 +83,7 @@ function main(){
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT}  Config postfix pour schleuder ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        sleep 3
+        sleep 5
 
         [[ -z $(grep schleuder /etc/postfix/master.cf) ]] && (echo -e "schleuder  unix  -       n       n       -       -       pipe\n  flags=DRhu user=schleuder argv=$SCHLEUDER_BIN work ${recipient}"|$SUDO  tee -a  /etc/postfix/master.cf)
 
@@ -118,7 +118,12 @@ AOF
         root@$LISTS          root@$ORIGINDOMAIN
 BOF
 
+        $SUDO postmap /etc/postfix/virtual_aliases
         $SUDO systemctl restart postfix
+
+}
+
+function main_schleuderweb(){
         $SUDO mkdir -p /var/www/
         cd /var/www/
 
@@ -126,53 +131,76 @@ BOF
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Déploiement source schleuder-web ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        sleep 3
+        sleep 5
 
         $SUDO git clone https://0xacab.org/schleuder/schleuder-web/
         $SUDO chown -R schleuder:root /var/www/schleuder-web
         [[ ! -e /var/www/schleuder-web/tmp ]] && $SUDO mkdir -p /var/www/schleuder-web/tmp
         $SUDO chown -R schleuder:root /var/www/schleuder-web/tmp
         $SUDO chmod 01755 /var/www/schleuder-web/tmp
-        cd schleuder-web
-        echo -e "${Red} installation de schleuder-web : ${NORMAL}"
+        #---------- user schleuder ---------#
+cat <<ROF |$SUDO  tee -a /tmp/schleuderwebA.sh
+NORMAL=`echo "\033[m"`
+BLUE=`echo "\033[36m"` #Blue
+YELLOW=`echo "\033[33m"` #yellow
+FGRED=`echo "\033[41m"`
+RED_TEXT=`echo "\033[31m"`
+ENTER_LINE=`echo "\033[33m"`
+Red=`echo "\033[0;31m"`
+Green=`echo "\033[32m"`
 
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
-        echo -e "${RED_TEXT} Install ${NORMAL}"
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
-        sleep 3
+VARTMP="/tmp/schleuderweb_var.sh"
+cd /var/www/
+cd schleuder-web
+echo -e "${Red} installation de schleuder-web : ${NORMAL}"
 
-        #bundle install --without development
-        bundle update --bundler
-        bundle config set --local path $SCHLEUDER_WEB
-        bundle config set --local without 'development'
-        bundle install
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${RED_TEXT} Install ${NORMAL}"
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+sleep 5
 
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
-        echo -e "${RED_TEXT} Creation SECRET_KEY_BASE ${NORMAL}"
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
-        sleep 3
-        export SECRET_KEY_BASE=$(bin/rails secret)
+#bundle install --without development
+bundle update --bundler
+bundle config set --local path $SCHLEUDER_WEB
+bundle config set --local without 'development'
+bundle install
 
-        echo -e "${Red} SECRET_KEY_BASE=$SECRET_KEY_BASE${NORMAL}"
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${RED_TEXT} Creation SECRET_KEY_BASE ${NORMAL}"
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+sleep 5
+export SECRET_KEY_BASE=$(bin/rails secret)
 
+echo -e "${Red} SECRET_KEY_BASE=$SECRET_KEY_BASE${NORMAL}"
+echo -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" >>$VARTMP
+#---------- end user schleuder ---------#
+ROF
+        chmod +x /tmp/schleuderwebA.sh
+        su - schleuder --shell=/bin/bash -c  /tmp/schleuderwebA.sh  
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Creation SCHLEUDER_TLS_FINGERPRINT ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        sleep 3
+        sleep 5
         export SCHLEUDER_TLS_FINGERPRINT=$($SUDO  schleuder cert fingerprint|cut -d" " -f4)
 
 
         echo -e "${Red} 
         SCHLEUDER_TLS_FINGERPRINT=$SCHLEUDER_TLS_FINGERPRINT${NORMAL}"
+       
+       
+        
         $SUDO systemctl restart schleuder-api-daemon.service
-
+        
+        
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Creation SCHLEUDER_API_KEY ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        sleep 3
+        sleep 5
         export SCHLEUDER_API_KEY=$($SUDO  schleuder new_api_key)
+        
+        
         $SUDO sed -i "s/# shared:/shared:\n  api_key: ${SCHLEUDER_API_KEY}/g" ${SCHLEUDER_WEB}config/secrets.yml
 
         echo -e "${Red} SCHLEUDER_API_KEY=$SCHLEUDER_API_KEY${NORMAL}"
@@ -188,7 +216,7 @@ BOF
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Var schleuder-web ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        sleep 3
+        sleep 5
 
         echo -e "[Service]
         SCHLEUDER_API_HOST=$SCHLEUDER_API_HOST
@@ -217,20 +245,36 @@ BOF
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Setup ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        sleep 3
+        sleep 5
+        cat <<SOF |$SUDO  tee -a /tmp/schleuderwebB.sh
+#---------- user schleuder ---------#
+NORMAL=`echo "\033[m"`
+BLUE=`echo "\033[36m"` #Blue
+YELLOW=`echo "\033[33m"` #yellow
+FGRED=`echo "\033[41m"`
+RED_TEXT=`echo "\033[31m"`
+ENTER_LINE=`echo "\033[33m"`
+Red=`echo "\033[0;31m"`
+Green=`echo "\033[32m"`
 
-        bundle exec rake db:setup RAILS_ENV=production
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
-        echo -e "${RED_TEXT} Précompile ${NORMAL}"
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
-        sleep 3
+VARTMP="/tmp/schleuderweb_var.sh"
+cd /var/www/
+cd schleuder-web
+bundle exec rake db:setup RAILS_ENV=production
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${RED_TEXT} Précompile ${NORMAL}"
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+sleep 5
 
-        RAILS_ENV=production bundle exec rake assets:precompile
-
+RAILS_ENV=production bundle exec rake assets:precompile
+#---------- end user schleuder ---------#
+SOF     
+        chmod +x /tmp/schleuderwebB.sh
+        su - schleuder --shell=/bin/bash -c  /tmp/schleuderwebB.sh  
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Execution ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
-        sleep 3
+        sleep 5
 
         $SUDO systemctl enable schleuder-web.service 
 
@@ -253,6 +297,7 @@ do
         *) usage ;;
   esac
   no_args="false"
-  main
+  main_schleuder
+  main_schleuderweb
 done
 [[ "$no_args" == "true" ]] && { usage; exit 1; }
