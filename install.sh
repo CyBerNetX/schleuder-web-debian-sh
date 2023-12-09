@@ -287,7 +287,7 @@ do
         *) usage ;;
   esac
   no_args="false"
-  main_schleuder
-  main_schleuderweb
 done
 [[ "$no_args" == "true" ]] && { usage; exit 1; }
+main_schleuder
+main_schleuderweb
