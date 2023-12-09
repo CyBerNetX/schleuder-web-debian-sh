@@ -246,12 +246,11 @@ END_SWSA
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
         [[ ! -e /tmp/schleuderwebB.sh ]] && cat << END_SWSB |$SUDO tee -a /tmp/schleuderwebB.sh
-VARTMP="/tmp/schleuderweb_var.sh"
 cd /var/www/
 cd schleuder-web
 bundle exec rake db:setup RAILS_ENV=production
 echo -e "[==============================]"
-echo -e "Précompile"
+echo -e "Precompile"
 echo -e "[==============================]"
 sleep 5
 
