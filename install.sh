@@ -49,7 +49,6 @@ function usage(){
         echo "$0 [ -l liste.exemple.org | -o exemple.org ]"
         echo " -l : liste domaine"
         echo " -o : domaine original "
-        echo " -s : sudo password "
         echo ""
         echo "$0 -h "
         echo "    help"
@@ -143,14 +142,14 @@ function main_schleuderweb(){
         sleep 5
 
         $SUDO git clone https://0xacab.org/schleuder/schleuder-web/
-        $SUDO chown -R schleuder:root /var/www/schleuder-web
+        $SUDO chown -R schleuder:schleuder /var/www/schleuder-web
         [[ ! -e /var/www/schleuder-web/tmp ]] && $SUDO mkdir -p /var/www/schleuder-web/tmp
-        $SUDO chown -R schleuder:root /var/www/schleuder-web/tmp
+        $SUDO chown -R schleuder:schleuder /var/www/schleuder-web/tmp
         $SUDO chmod 01755 /var/www/schleuder-web/tmp
         echo "schleuder   ALL=NOPASSWD: ALL" |$SUDO  tee -a  /etc/sudoers.d/schleuder;
 
         #---------- user schleuder ---------#
-        exec $SUDO -u schleuder /bin/bash - <<'END_SWSA'
+        $SUDO -u schleuder /bin/bash - <<'END_SWSA'
 NORMAL=`echo "\033[m"`
 BLUE=`echo "\033[36m"` #Blue
 YELLOW=`echo "\033[33m"` #yellow
@@ -255,7 +254,7 @@ END_SWSA
         echo -e "${RED_TEXT} Setup ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
-        exec $SUDO -u schleuder /bin/bash - <<'END_SWSB'
+        $SUDO -u schleuder /bin/bash - <<'END_SWSB'
 NORMAL=`echo "\033[m"`
 BLUE=`echo "\033[36m"` #Blue
 YELLOW=`echo "\033[33m"` #yellow
@@ -284,7 +283,8 @@ END_SWSB
         $SUDO systemctl enable schleuder-web.service 
 
         $SUDO systemctl start schleuder-web.service 
-
+        $SUDO rm /etc/sudoers.d/schleuder;
+        
         echo -e "${BLUE} Visit http://$(hostname -I|awk '{print $1}'):3000/${NORMAL}"
         echo -e "${YELLOW} compte : root@localhost ${NORMAL}"
         echo -e "${YELLOW} Password : slingit! ${NORMAL}"
@@ -298,7 +298,6 @@ do
         in
         l) LISTS=${OPTARG};;
         o) ORIGINDOMAIN=${OPTARG};;
-        s) ASKPASS=${OPTARG};;
         h) usage ;;
         *) usage ;;
   esac
