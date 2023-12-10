@@ -3,8 +3,8 @@
 # curl -sL https://raw.githubusercontent.com/CyBerNetX/schleuder-web-debian-sh/main/install.sh |bash -s -- -h
 # http://192.168.1.123:3000
 #
-# sudo systemctl status schleuder-api-daemon.service
-# sudo systemctl status schleuder-web.service 
+# $SUDO systemctl status schleuder-api-daemon.service
+# $SUDO systemctl status schleuder-web.service 
 #
 LOGDIR="./log"
 LOG="$LOGDIR/Installation_schleuder-web_$(date +%F_%H%M%S).log"
@@ -81,7 +81,7 @@ function main_schleuder(){
         sleep 5
         $SUDO apt-get install -y schleuder 
 
-        $SUDO apt install -y ruby-bundler libxml2-dev zlib1g-dev libsqlite3-dev ruby-full build-essential git ruby-dev openssl libssl-dev
+        #$SUDO apt install -y ruby-bundler libxml2-dev zlib1g-dev libsqlite3-dev ruby-full build-essential git ruby-dev openssl libssl-dev
 
         $SUDO  sed -i "s/host: localhost/host: ${SCHLEUDER_API_HOST}/g"  ${SCHLEUDER}schleuder.yml
         $SUDO  sed -i "s/port: 4443/port: ${SCHLEUDER_API_PORT}/g"  ${SCHLEUDER}schleuder.yml
@@ -132,24 +132,15 @@ BOF
 }
 
 function main_schleuderweb(){
-        $SUDO mkdir -p /var/www/
-        cd /var/www/
+        # Nom de l'utilisateur spécifié en argument
+        UTILISATEUR=schleuder-web
+        $SUDO useradd -r -m -d /home/$UTILISATEUR -s /bin/bash -c "Schleuder Web GPG-mailing list manager mode web" $UTILISATEUR
+        $SUDO apt install -y curl git
+        
 
-
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
-        echo -e "${RED_TEXT} Déploiement source schleuder-web ${NORMAL}"
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
-        sleep 5
-
-        $SUDO git clone https://0xacab.org/schleuder/schleuder-web/
-        $SUDO chown -R schleuder:schleuder /var/www/schleuder-web
-        [[ ! -e /var/www/schleuder-web/tmp ]] && $SUDO mkdir -p /var/www/schleuder-web/tmp
-        $SUDO chown -R schleuder:schleuder /var/www/schleuder-web/tmp
-        $SUDO chmod 01755 /var/www/schleuder-web/tmp
-        echo "schleuder   ALL=NOPASSWD: ALL" |$SUDO  tee -a  /etc/sudoers.d/schleuder;
-
+       
         #---------- user schleuder ---------#
-        $SUDO -u schleuder /bin/bash - <<'END_SWSA'
+        $SUDO -u $UTILISATEUR /bin/bash - <<'END_SWSA'
 NORMAL=`echo "\033[m"`
 BLUE=`echo "\033[36m"` #Blue
 YELLOW=`echo "\033[33m"` #yellow
@@ -160,8 +151,49 @@ Red=`echo "\033[0;31m"`
 Green=`echo "\033[32m"`
 
 VARTMP="/tmp/schleuderweb_var.sh"
-cd /var/www/
-cd schleuder-web
+
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${RED_TEXT} # Installation de Ruby avec rbenv ${NORMAL}"
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+
+git clone https://github.com/rbenv/rbenv.git /home/$UTILISATEUR/.rbenv
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> /home/$UTILISATEUR/.bashrc
+echo 'eval "$(rbenv init --no-rehash -)"' >> /home/$UTILISATEUR/.bashrc
+exec $SHELL
+
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${RED_TEXT} # Installation de Ruby-build (plugin pour rbenv) ${NORMAL}"
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+
+git clone https://github.com/rbenv/ruby-build.git /home/$UTILISATEUR/.rbenv/plugins/ruby-build
+
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${RED_TEXT} # Installation de Ruby ${NORMAL}"
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+
+rbenv install 2.7.4
+rbenv global 2.7.4
+
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${RED_TEXT} # Installation de Bundler ${NORMAL}"
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+
+gem install bundler
+
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${RED_TEXT} Déploiement source schleuder-web ${NORMAL}"
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+sleep 5
+
+# Installation de Schleuder-web
+$SUDO -u $UTILISATEUR git clone https://0xacab.org/schleuder/schleuder-web.git /home/$UTILISATEUR/schleuder-web
+cd /home/$UTILISATEUR/schleuder-web
+
+
+
+
+
+
 echo -e "${Red} installation de schleuder-web : ${NORMAL}"
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
@@ -286,7 +318,7 @@ END_SWSB
         $SUDO systemctl enable schleuder-web.service 
 
         $SUDO systemctl start schleuder-web.service 
-        $SUDO rm /etc/sudoers.d/schleuder;
+        $SUDO rm /etc/$SUDOers.d/schleuder;
         
         echo -e "${BLUE} Visit http://$(hostname -I|awk '{print $1}'):3000/${NORMAL}"
         echo -e "${YELLOW} compte : root@localhost ${NORMAL}"
