@@ -161,6 +161,7 @@ echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> /home/$UTILISATEUR/.bashrc
 echo 'eval "$(rbenv init --no-rehash -)"' >> /home/$UTILISATEUR/.bashrc
 . ~/.bashrc
 
+
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Ruby-build (plugin pour rbenv) ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
