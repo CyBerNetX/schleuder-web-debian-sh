@@ -165,7 +165,7 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 
 git clone https://github.com/rbenv/rbenv.git /home/$UTILISATEUR/.rbenv
-echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> /home/$UTILISATEUR/.bashrc
+echo 'export PATH="~/.rbenv/bin:$PATH"' >> /home/$UTILISATEUR/.bashrc
 echo 'eval "$(rbenv init --no-rehash -)"' >> /home/$UTILISATEUR/.bashrc
 . ~/.bashrc
 
@@ -177,6 +177,7 @@ sleep 5
 
 git clone https://github.com/rbenv/ruby-build.git /home/$UTILISATEUR/.rbenv/plugins/ruby-build
 . ~/.bashrc
+echo $PATH
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Ruby ${NORMAL}"
