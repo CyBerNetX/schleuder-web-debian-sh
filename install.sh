@@ -317,7 +317,7 @@ END_SWSA
         echo -e "${RED_TEXT} Setup ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
-        $SUDO -u schleuder /bin/bash - <<'END_SWSB'
+        $SUDO -u $UTILISATEUR /bin/bash - <<'END_SWSB'
 NORMAL=`echo "\033[m"`
 BLUE=`echo "\033[36m"` #Blue
 YELLOW=`echo "\033[33m"` #yellow
@@ -327,8 +327,7 @@ ENTER_LINE=`echo "\033[33m"`
 Red=`echo "\033[0;31m"`
 Green=`echo "\033[32m"`
 
-cd /var/www/
-cd schleuder-web
+
 bundle exec rake db:setup RAILS_ENV=production
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} Precompile ${NORMAL}"
