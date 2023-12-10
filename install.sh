@@ -149,7 +149,7 @@ RED_TEXT=`echo "\033[31m"`
 ENTER_LINE=`echo "\033[33m"`
 Red=`echo "\033[0;31m"`
 Green=`echo "\033[32m"`
-
+UTILISATEUR=schleuder-web
 VARTMP="/tmp/schleuderweb_var.sh"
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
