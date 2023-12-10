@@ -156,18 +156,24 @@ RED_TEXT=`echo "\033[31m"`
 ENTER_LINE=`echo "\033[33m"`
 Red=`echo "\033[0;31m"`
 Green=`echo "\033[32m"`
-UTILISATEUR=schleuder-web
 VARTMP="/tmp/schleuderweb_var.sh"
+
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+cd ~/
+echo $PWD
+echo $PATH
+echo -e "${YELLOW} [==============================] ${NORMAL}"
+sleep 5
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Ruby avec rbenv ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 
-git clone https://github.com/rbenv/rbenv.git /home/$UTILISATEUR/.rbenv
-echo 'export PATH="~/.rbenv/bin:$PATH"' >> /home/$UTILISATEUR/.bashrc
-echo 'eval "$(rbenv init --no-rehash -)"' >> /home/$UTILISATEUR/.bashrc
-. ~/.bashrc
+git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+echo 'export PATH="~/.rbenv/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(rbenv init --no-rehash -)"' >> ~/.bashrc
+source ~/.profile
 
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
@@ -175,8 +181,8 @@ echo -e "${RED_TEXT} # Installation de Ruby-build (plugin pour rbenv) ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 
-git clone https://github.com/rbenv/ruby-build.git /home/$UTILISATEUR/.rbenv/plugins/ruby-build
-. ~/.bashrc
+git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+source ~/.profile
 echo $PATH
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
@@ -200,8 +206,8 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 
 # Installation de Schleuder-web
-git clone https://0xacab.org/schleuder/schleuder-web.git /home/$UTILISATEUR/schleuder-web
-cd /home/$UTILISATEUR/schleuder-web
+git clone https://0xacab.org/schleuder/schleuder-web.git ~/schleuder-web
+cd ~/schleuder-web
 
 
 
