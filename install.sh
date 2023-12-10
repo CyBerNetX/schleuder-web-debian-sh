@@ -173,7 +173,8 @@ sleep 5
 git clone https://github.com/rbenv/rbenv.git ~/.rbenv
 echo 'export PATH="~/.rbenv/bin:$PATH"' >> ~/.bashrc
 echo 'eval "$(rbenv init --no-rehash -)"' >> ~/.bashrc
-exec $SHELL
+export PATH="~/.rbenv/bin:$PATH"
+
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 cd ~/
@@ -189,7 +190,7 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 
 git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
-exec $SHELL
+
 echo $PATH
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
