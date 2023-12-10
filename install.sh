@@ -81,7 +81,7 @@ function main_schleuder(){
         sleep 5
         $SUDO apt-get install -y schleuder 
 
-        #$SUDO apt install -y ruby-bundler libxml2-dev zlib1g-dev libsqlite3-dev ruby-full build-essential git ruby-dev openssl libssl-dev
+        
 
         $SUDO  sed -i "s/host: localhost/host: ${SCHLEUDER_API_HOST}/g"  ${SCHLEUDER}schleuder.yml
         $SUDO  sed -i "s/port: 4443/port: ${SCHLEUDER_API_PORT}/g"  ${SCHLEUDER}schleuder.yml
@@ -132,9 +132,16 @@ BOF
 }
 
 function main_schleuderweb(){
+
+        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${RED_TEXT} # Creation user et prerequis ${NORMAL}"
+        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        sleep 5
+
         # Nom de l'utilisateur spécifié en argument
         UTILISATEUR=schleuder-web
         $SUDO useradd -r -m -d /home/$UTILISATEUR -s /bin/bash -c "Schleuder Web GPG-mailing list manager mode web" $UTILISATEUR
+        $SUDO apt install -y libxml2-dev zlib1g-dev libsqlite3-dev build-essential git openssl libssl-dev
         $SUDO apt install -y curl git
         
 
@@ -155,6 +162,7 @@ VARTMP="/tmp/schleuderweb_var.sh"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Ruby avec rbenv ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
+sleep 5
 
 git clone https://github.com/rbenv/rbenv.git /home/$UTILISATEUR/.rbenv
 echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> /home/$UTILISATEUR/.bashrc
@@ -165,6 +173,7 @@ echo 'eval "$(rbenv init --no-rehash -)"' >> /home/$UTILISATEUR/.bashrc
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Ruby-build (plugin pour rbenv) ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
+sleep 5
 
 git clone https://github.com/rbenv/ruby-build.git /home/$UTILISATEUR/.rbenv/plugins/ruby-build
 . ~/.bashrc
@@ -172,6 +181,7 @@ git clone https://github.com/rbenv/ruby-build.git /home/$UTILISATEUR/.rbenv/plug
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Ruby ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
+sleep 5
 
 rbenv install 2.7.4
 rbenv global 2.7.4
@@ -179,6 +189,7 @@ rbenv global 2.7.4
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Bundler ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
+sleep 5
 
 gem install bundler
 
