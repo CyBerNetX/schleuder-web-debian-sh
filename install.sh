@@ -61,7 +61,7 @@ function main_schleuder(){
         echo -e "$logo"
         sleep 5
         SCHLEUDER_BIN=$(whereis -b schleuder|cut -d" " -f2)
-        SCHLEUDER_WEB="/var/www/schleuder-web/"
+        SCHLEUDER_WEB="/home/$UTILISATEUR/schleuder-web/"
         SCHLEUDER="/etc/schleuder/"
         SCHLEUDER_WEB_VAR_DEFAULT="/etc/default/schleuder-web"
         SCHLEUDER_WEB_SERVICE="/etc/systemd/system/schleuder-web.service"
@@ -308,7 +308,7 @@ END_SWSA
         [Service]
         EnvironmentFile=${SCHLEUDER_WEB_VAR_DEFAULT}
         WorkingDirectory=${SCHLEUDER_WEB}
-        User=schleuder
+        User=$UTILISATEUR
         ExecStart=${SCHLEUDER_WEB}bin/bundle exec rails server  
         [Install]
         WantedBy=multi-user.target" | $SUDO  tee ${SCHLEUDER_WEB_SERVICE}
