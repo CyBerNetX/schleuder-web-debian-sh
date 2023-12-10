@@ -170,9 +170,12 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 
 #bundle install --without development
+echo -e "${RED_TEXT} bundle update --bundler ${NORMAL}"
 bundle update --bundler
+echo -e "${RED_TEXT} bundle set $SCHLEUDER_WEB ${NORMAL}"
 bundle config set --local path $SCHLEUDER_WEB
 bundle config set --local without 'development'
+echo -e "${RED_TEXT} bundle install ${NORMAL}"
 bundle install
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
