@@ -19,8 +19,6 @@ ENTER_LINE=`echo "\033[33m"`
 Red=`echo "\033[0;31m"`
 Green=`echo "\033[32m"`
 
-
-
 nc="\033[00m"
 red="\033[01;31m"
 green="\033[01;32m"
@@ -29,6 +27,7 @@ blue="[debug]\033[01;34m"
 purple="\033[01;35m"
 cyan="\033[01;36m"
 
+UTILISATEUR=schleuder-web
 # default constant values
 
 logo="${cyan}Author :${green} 
@@ -93,7 +92,7 @@ function main_schleuder(){
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
 
-        [[ -z $(grep schleuder /etc/postfix/master.cf) ]] && (echo -e "schleuder  unix  -       n       n       -       -       pipe\n  flags=DRhu user=schleuder argv=$SCHLEUDER_BIN work ${recipient}"|$SUDO  tee -a  /etc/postfix/master.cf)
+        [[ -z $(grep schleuder /etc/postfix/master.cf) ]] && (echo -e "schleuder  unix  -       n       n       -       -       pipe\n  flags=DRhu user=schleuder argv=$SCHLEUDER_BIN work \${recipient}"|$SUDO  tee -a  /etc/postfix/master.cf)
 
         [[ -z $(grep schleuder /etc/postfix/main.cf) ]] && ( echo -e " \n
         schleuder_destination_recipient_limit = 1\n\
@@ -139,7 +138,7 @@ function main_schleuderweb(){
         sleep 5
 
         # Nom de l'utilisateur spécifié en argument
-        UTILISATEUR=schleuder-web
+        
         $SUDO useradd -r -m -d /home/$UTILISATEUR -s /bin/bash -c "Schleuder Web GPG-mailing list manager mode web" $UTILISATEUR
         $SUDO apt install -y libxml2-dev zlib1g-dev libsqlite3-dev build-essential git openssl libssl-dev
         $SUDO apt install -y curl git
