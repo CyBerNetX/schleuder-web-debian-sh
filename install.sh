@@ -38,7 +38,7 @@ SCHLEUDER_WEB_SERVICE="/etc/systemd/system/schleuder-web.service"
 SCHLEUDER_API_HOST="127.0.0.1"
 SCHLEUDER_API_PORT="4443"
 # default constant values
-[[ ! -e $VARTMP ]] && cat <<"VAROEF" | tee -a $VARTMP
+[[ ! -e $VARTMP ]] && cat <<"VAROEF" > $VARTMP
 NORMAL=`echo "\033[m"`
 YELLOW=`echo "\033[33m"`
 RED_TEXT=`echo "\033[31m"`
