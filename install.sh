@@ -140,7 +140,7 @@ function main_schleuderweb(){
         # Nom de l'utilisateur spécifié en argument
         
         $SUDO useradd -r -m -d /home/$UTILISATEUR -s /bin/bash -c "Schleuder Web GPG-mailing list manager mode web" $UTILISATEUR
-        $SUDO apt install -y libxml2-dev zlib1g-dev libsqlite3-dev build-essential git openssl libssl-dev
+        $SUDO apt install -y autoconf patch build-essential rustc libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev
         $SUDO apt install -y curl git
         $SUDO groupadd -f gems
         $SUDO usermod -aG gems $UTILISATEUR
