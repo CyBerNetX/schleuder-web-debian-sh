@@ -159,7 +159,7 @@ ENTER_LINE=`echo "\033[33m"`
 Red=`echo "\033[0;31m"`
 Green=`echo "\033[32m"`
 VARTMP="/tmp/schleuderweb_var.sh"
-
+SCHLEUDER_WEB="~/schleuder-web"
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 cd ~/
@@ -217,8 +217,8 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 
 # Installation de Schleuder-web
-git clone https://0xacab.org/schleuder/schleuder-web.git ~/schleuder-web
-cd ~/schleuder-web
+git clone https://0xacab.org/schleuder/schleuder-web.git $SCHLEUDER_WEB
+cd $SCHLEUDER_WEB
 
 
 
