@@ -140,7 +140,7 @@ function main_schleuderweb(){
         # Nom de l'utilisateur spécifié en argument
         
         $SUDO useradd -r -m -d /home/$UTILISATEUR -s /bin/bash -c "Schleuder Web GPG-mailing list manager mode web" $UTILISATEUR
-        $SUDO apt install -y autoconf patch build-essential rustc libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev
+        $SUDO apt install -y autoconf patch build-essential rustc libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev libxml2-dev libsqlite3-dev openssl
         $SUDO apt install -y curl git
         $SUDO groupadd -f gems
         $SUDO usermod -aG gems $UTILISATEUR
@@ -176,7 +176,7 @@ sleep 5
 git clone https://github.com/rbenv/rbenv.git ~/.rbenv
 echo 'export PATH="~/.rbenv/bin:$PATH"' >> ~/.bashrc
 echo 'eval "$(rbenv init --no-rehash -)"' >> ~/.bashrc
-export PATH="/home/schleuder-web/.rbenv/shims:~/.rbenv/bin:$PATH"
+export PATH="~/.rbenv/shims:~/.rbenv/bin:$PATH"
 
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
@@ -293,28 +293,28 @@ END_SWSA
         sleep 5
         . $VARTMP
         echo -e "[Service]
-        SCHLEUDER_API_HOST=$SCHLEUDER_API_HOST
-        SCHLEUDER_API_PORT=$SCHLEUDER_API_PORT
-        SCHLEUDER_API_KEY=$SCHLEUDER_API_KEY
-        SCHLEUDER_TLS_FINGERPRINT=$SCHLEUDER_TLS_FINGERPRINT
-        SECRET_KEY_BASE=$SECRET_KEY_BASE
-        RAILS_ENV=production" | tee ${SCHLEUDER_WEB_VAR_DEFAULT}
+SCHLEUDER_API_HOST=$SCHLEUDER_API_HOST
+SCHLEUDER_API_PORT=$SCHLEUDER_API_PORT
+SCHLEUDER_API_KEY=$SCHLEUDER_API_KEY
+SCHLEUDER_TLS_FINGERPRINT=$SCHLEUDER_TLS_FINGERPRINT
+SECRET_KEY_BASE=$SECRET_KEY_BASE
+RAILS_ENV=production" | tee ${SCHLEUDER_WEB_VAR_DEFAULT}
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Service schleuder-web ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
 
         echo -e "[Unit]
-        Description=Schleuder Web
-        After=local-fs.target network.target
+Description=Schleuder Web
+After=local-fs.target network.target
 
-        [Service]
-        EnvironmentFile=${SCHLEUDER_WEB_VAR_DEFAULT}
-        WorkingDirectory=${SCHLEUDER_WEB}
-        User=$UTILISATEUR
-        ExecStart=${SCHLEUDER_WEB}bin/bundle exec rails server  
-        [Install]
-        WantedBy=multi-user.target" | $SUDO  tee ${SCHLEUDER_WEB_SERVICE}
+[Service]
+EnvironmentFile=${SCHLEUDER_WEB_VAR_DEFAULT}
+WorkingDirectory=${SCHLEUDER_WEB}
+User=$UTILISATEUR
+ExecStart=${SCHLEUDER_WEB}bin/bundle exec rails server  
+[Install]
+WantedBy=multi-user.target" | $SUDO  tee ${SCHLEUDER_WEB_SERVICE}
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Setup ${NORMAL}"
