@@ -142,9 +142,12 @@ function main_schleuderweb(){
         $SUDO useradd -r -m -d /home/$UTILISATEUR -s /bin/bash -c "Schleuder Web GPG-mailing list manager mode web" $UTILISATEUR
         $SUDO apt install -y libxml2-dev zlib1g-dev libsqlite3-dev build-essential git openssl libssl-dev
         $SUDO apt install -y curl git
-        groupadd -f gems
-        usermod -aG gems $UTILISATEUR
-       
+        $SUDO groupadd -f gems
+        $SUDO usermod -aG gems $UTILISATEUR
+        
+        [[ ! -e /var/lib/gems/ ]] && $SUDO mkdir -p /var/lib/gems/
+        $SUDO chown :gems /var/lib/gems/
+        $SUDO chmod g+sw /var/lib/gems/
         #---------- user schleuder ---------#
         $SUDO -u $UTILISATEUR /bin/bash - <<'END_SWSA'
 NORMAL=`echo "\033[m"`
@@ -157,8 +160,6 @@ Red=`echo "\033[0;31m"`
 Green=`echo "\033[32m"`
 VARTMP="/tmp/schleuderweb_var.sh"
 
-chown :gems /var/lib/gems/
-chmod g+sw /var/lib/gems/
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 cd ~/
@@ -200,8 +201,8 @@ echo -e "${RED_TEXT} # Installation de Ruby ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 
-rbenv install 2.7.4
-rbenv global 2.7.4
+rbenv install 3.2.2
+rbenv global 3.2.2
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Bundler ${NORMAL}"
