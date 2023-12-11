@@ -208,8 +208,8 @@ echo -e "${RED_TEXT} # Installation de Ruby ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 
-rbenv install -l
-rbenv global -l
+rbenv install 3.1.4
+rbenv global 3.1.4
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Bundler ${NORMAL}"
