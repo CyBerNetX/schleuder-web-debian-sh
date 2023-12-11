@@ -28,7 +28,17 @@ purple="\033[01;35m"
 cyan="\033[01;36m"
 
 UTILISATEUR=schleuder-web
+VARTMP=/tmp/shleuderweb.tmp
+
+SCHLEUDER_BIN=$(whereis -b schleuder|cut -d" " -f2)
+SCHLEUDER_WEB="/home/$UTILISATEUR/schleuder-web/"
+SCHLEUDER="/etc/schleuder/"
+SCHLEUDER_WEB_VAR_DEFAULT="/etc/default/schleuder-web"
+SCHLEUDER_WEB_SERVICE="/etc/systemd/system/schleuder-web.service"
+SCHLEUDER_API_HOST="127.0.0.1"
+SCHLEUDER_API_PORT="4443"
 # default constant values
+
 
 logo="${cyan}Author :${green} 
 ${blue}                  ____      ____            _   _      _${green}  __  __
@@ -59,13 +69,7 @@ function usage(){
 function main_schleuder(){
         echo -e "$logo"
         sleep 5
-        SCHLEUDER_BIN=$(whereis -b schleuder|cut -d" " -f2)
-        SCHLEUDER_WEB="/home/$UTILISATEUR/schleuder-web/"
-        SCHLEUDER="/etc/schleuder/"
-        SCHLEUDER_WEB_VAR_DEFAULT="/etc/default/schleuder-web"
-        SCHLEUDER_WEB_SERVICE="/etc/systemd/system/schleuder-web.service"
-        SCHLEUDER_API_HOST="127.0.0.1"
-        SCHLEUDER_API_PORT="4443"
+        
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${Red} Updates et upgrades ${NORMAL}"
@@ -136,7 +140,7 @@ function main_schleuderweb(){
         echo -e "${RED_TEXT} # Creation user et prerequis ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
-
+        
         # Nom de l'utilisateur spécifié en argument
         
         $SUDO useradd -r -m -d /home/$UTILISATEUR -s /bin/bash -c "Schleuder Web GPG-mailing list manager mode web" $UTILISATEUR
@@ -149,17 +153,8 @@ function main_schleuderweb(){
         $SUDO chown :gems /var/lib/gems/
         $SUDO chmod g+sw /var/lib/gems/
         #---------- user schleuder ---------#
-        $SUDO -u $UTILISATEUR /bin/bash - <<'END_SWSA'
-NORMAL=`echo "\033[m"`
-BLUE=`echo "\033[36m"` #Blue
-YELLOW=`echo "\033[33m"` #yellow
-FGRED=`echo "\033[41m"`
-RED_TEXT=`echo "\033[31m"`
-ENTER_LINE=`echo "\033[33m"`
-Red=`echo "\033[0;31m"`
-Green=`echo "\033[32m"`
-VARTMP="/tmp/schleuderweb_var.sh"
-SCHLEUDER_WEB="~/schleuder-web"
+        $SUDO -u $UTILISATEUR /bin/bash - <<"END_SWSA"
+
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 cd ~/
@@ -320,16 +315,7 @@ WantedBy=multi-user.target" | $SUDO  tee ${SCHLEUDER_WEB_SERVICE}
         echo -e "${RED_TEXT} Setup ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
-        $SUDO -u $UTILISATEUR /bin/bash - <<'END_SWSB'
-NORMAL=`echo "\033[m"`
-BLUE=`echo "\033[36m"` #Blue
-YELLOW=`echo "\033[33m"` #yellow
-FGRED=`echo "\033[41m"`
-RED_TEXT=`echo "\033[31m"`
-ENTER_LINE=`echo "\033[33m"`
-Red=`echo "\033[0;31m"`
-Green=`echo "\033[32m"`
-
+        $SUDO -u $UTILISATEUR /bin/bash - <<"END_SWSB"
 
 bundle exec rake db:setup RAILS_ENV=production
 echo -e "${YELLOW} [==============================] ${NORMAL}"
