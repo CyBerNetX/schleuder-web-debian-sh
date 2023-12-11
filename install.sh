@@ -48,6 +48,8 @@ SCHLEUDER_WEB=$SCHLEUDER_WEB
 
 VAROEF
 
+cat $VARTMP
+sleep 5
 
 logo="${cyan}Author :${green} 
 ${blue}                  ____      ____            _   _      _${green}  __  __
