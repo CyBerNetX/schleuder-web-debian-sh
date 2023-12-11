@@ -142,8 +142,8 @@ function main_schleuderweb(){
         $SUDO useradd -r -m -d /home/$UTILISATEUR -s /bin/bash -c "Schleuder Web GPG-mailing list manager mode web" $UTILISATEUR
         $SUDO apt install -y libxml2-dev zlib1g-dev libsqlite3-dev build-essential git openssl libssl-dev
         $SUDO apt install -y curl git
-        
-
+        groupadd -f gems
+        usermod -aG gems $UTILISATEUR
        
         #---------- user schleuder ---------#
         $SUDO -u $UTILISATEUR /bin/bash - <<'END_SWSA'
@@ -156,6 +156,9 @@ ENTER_LINE=`echo "\033[33m"`
 Red=`echo "\033[0;31m"`
 Green=`echo "\033[32m"`
 VARTMP="/tmp/schleuderweb_var.sh"
+
+chown :gems /var/lib/gems/
+chmod g+sw /var/lib/gems/
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 cd ~/
