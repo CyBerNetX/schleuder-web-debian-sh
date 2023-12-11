@@ -27,11 +27,11 @@ blue="[debug]\033[01;34m"
 purple="\033[01;35m"
 cyan="\033[01;36m"
 
-UTILISATEUR=schleuder-web
-export VARTMP=/tmp/shleuderweb.tmp
+
+export VARTMP=/tmp/schleuderweb.tmp
 
 SCHLEUDER_BIN=$(whereis -b schleuder|cut -d" " -f2)
-SCHLEUDER_WEB="/home/$UTILISATEUR/schleuder-web/"
+
 SCHLEUDER="/etc/schleuder/"
 SCHLEUDER_WEB_VAR_DEFAULT="/etc/default/schleuder-web"
 SCHLEUDER_WEB_SERVICE="/etc/systemd/system/schleuder-web.service"
@@ -43,11 +43,11 @@ NORMAL=`echo "\033[m"`
 YELLOW=`echo "\033[33m"`
 RED_TEXT=`echo "\033[31m"`
 Red=`echo "\033[0;31m"`
-UTILISATEUR=$UTILISATEUR
-SCHLEUDER_WEB=$SCHLEUDER_WEB
+UTILISATEUR=schleuder-web
+SCHLEUDER_WEB="/home/$UTILISATEUR/schleuder-web/"
 
 VAROEF
-
+. $VARTMP
 cat $VARTMP
 sleep 5
 
