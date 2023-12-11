@@ -28,7 +28,7 @@ purple="\033[01;35m"
 cyan="\033[01;36m"
 
 UTILISATEUR=schleuder-web
-VARTMP=/tmp/shleuderweb.tmp
+export VARTMP=/tmp/shleuderweb.tmp
 
 SCHLEUDER_BIN=$(whereis -b schleuder|cut -d" " -f2)
 SCHLEUDER_WEB="/home/$UTILISATEUR/schleuder-web/"
@@ -38,6 +38,15 @@ SCHLEUDER_WEB_SERVICE="/etc/systemd/system/schleuder-web.service"
 SCHLEUDER_API_HOST="127.0.0.1"
 SCHLEUDER_API_PORT="4443"
 # default constant values
+[[ ! -e $VARTMP ]] && cat <<"VAROEF" | tee -a $VARTMP
+NORMAL=`echo "\033[m"`
+YELLOW=`echo "\033[33m"`
+RED_TEXT=`echo "\033[31m"`
+Red=`echo "\033[0;31m"`
+UTILISATEUR=$UTILISATEUR
+SCHLEUDER_WEB=$SCHLEUDER_WEB
+
+VAROEF
 
 
 logo="${cyan}Author :${green} 
@@ -153,9 +162,9 @@ function main_schleuderweb(){
         $SUDO chown :gems /var/lib/gems/
         $SUDO chmod g+sw /var/lib/gems/
         #---------- user schleuder ---------#
-        $SUDO -u $UTILISATEUR /bin/bash - <<"END_SWSA"
+        $SUDO VARTMP=$VARTMP -u $UTILISATEUR /bin/bash - <<"END_SWSA"
 
-
+. $VARTMP
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 cd ~/
 echo $PWD
