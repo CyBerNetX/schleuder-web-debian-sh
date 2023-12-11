@@ -47,6 +47,7 @@ UTILISATEUR=schleuder-web
 SCHLEUDER_WEB="/home/$UTILISATEUR/schleuder-web/"
 
 VAROEF
+chmod 777 $VARTMP
 . $VARTMP
 cat $VARTMP
 sleep 5
@@ -345,11 +346,11 @@ END_SWSB
         $SUDO systemctl enable schleuder-web.service 
 
         $SUDO systemctl start schleuder-web.service 
-        $SUDO rm /etc/$SUDOers.d/schleuder;
-        
+               
         echo -e "${BLUE} Visit http://$(hostname -I|awk '{print $1}'):3000/${NORMAL}"
         echo -e "${YELLOW} compte : root@localhost ${NORMAL}"
         echo -e "${YELLOW} Password : slingit! ${NORMAL}"
+        $SUDO rm $VARTMP
         exit 0
 }
 
