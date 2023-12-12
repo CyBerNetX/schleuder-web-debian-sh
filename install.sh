@@ -173,7 +173,7 @@ function main_schleuderweb(){
         $SUDO chown :gems /var/lib/gems/
         $SUDO chmod g+sw /var/lib/gems/
         #---------- user schleuder ---------#
-        $SUDO VARTMP=$VARTMP -u $UTILISATEUR  /bin/bash -l - <<"END_SWSA"
+        $SUDO VARTMP=$VARTMP -i -u $UTILISATEUR  <<"END_SWSA"
 
 . $VARTMP
 echo -e "${yellow} [==============================] ${NORMAL}"
@@ -190,8 +190,9 @@ sleep 5
 
 git clone https://github.com/rbenv/rbenv.git ~/.rbenv
 check_command
-echo 'export PATH="~/.rbenv/bin:$PATH"' >> ~/.bashrc
-echo 'eval "$(rbenv init --no-rehash -)"' >> ~/.bashrc
+echo 'PATH="$PATH:~/.rbenv/bin"' >> ~/.profile
+echo 'export PATH' >> ~/.profile
+echo 'eval "$(rbenv init --no-rehash -)"' >> ~/.profile
 export PATH="~/.rbenv/shims:~/.rbenv/bin:$PATH"
 
 
@@ -213,7 +214,7 @@ check_command
 echo $PATH
 END_SWSA
 
-        $SUDO VARTMP=$VARTMP -u $UTILISATEUR /bin/bash -l - <<"END_SWSC"
+        $SUDO VARTMP=$VARTMP -i -u $UTILISATEUR  <<"END_SWSC"
 
 . $VARTMP
 echo -e "${yellow} [==============================] ${NORMAL}"
@@ -347,7 +348,7 @@ WantedBy=multi-user.target" | $SUDO  tee ${SCHLEUDER_WEB_SERVICE}
         echo -e "${RED_TEXT} Setup ${NORMAL}"
         echo -e "${yellow} [==============================] ${NORMAL}"
         sleep 5
-        $SUDO -u $UTILISATEUR  /bin/bash -l - <<"END_SWSB"
+        $SUDO VARTMP=$VARTMP -i -u $UTILISATEUR <<"END_SWSB"
 
 . $VARTMP
 bundle exec rake db:setup RAILS_ENV=production
