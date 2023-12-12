@@ -41,6 +41,7 @@ SCHLEUDER_API_PORT="4443"
 [[ ! -e $VARTMP ]] && cat <<"VAROEF" > $VARTMP
 NORMAL=`echo "\033[m"`
 YELLOW=`echo "\033[33m"`
+yellow="\033[01;33m"
 RED_TEXT=`echo "\033[31m"`
 Red=`echo "\033[0;31m"`
 UTILISATEUR=schleuder-web
@@ -89,16 +90,16 @@ function main_schleuder(){
         sleep 5
         
 
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         echo -e "${Red} Updates et upgrades ${NORMAL}"
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         sleep 5
 
         $SUDO apt-get update && $SUDO apt-get upgrade -y
         check_command
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         echo -e "${Red} Installation des applications ${NORMAL}"
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         sleep 5
         $SUDO apt-get install -y schleuder 
         check_command
@@ -109,9 +110,9 @@ function main_schleuder(){
 
         $SUDO systemctl restart schleuder-api-daemon.service
         check_command
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT}  Config postfix pour schleuder ${NORMAL}"
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         sleep 5
 
         [[ -z $(grep schleuder /etc/postfix/master.cf) ]] && (echo -e "schleuder  unix  -       n       n       -       -       pipe\n  flags=DRhu user=schleuder argv=$SCHLEUDER_BIN work \${recipient}"|$SUDO  tee -a  /etc/postfix/master.cf)
@@ -155,9 +156,9 @@ BOF
 
 function main_schleuderweb(){
 
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} # Creation user et prerequis ${NORMAL}"
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         sleep 5
         
         # Nom de l'utilisateur spécifié en argument
@@ -175,16 +176,16 @@ function main_schleuderweb(){
         $SUDO VARTMP=$VARTMP -u $UTILISATEUR /bin/bash - <<"END_SWSA"
 
 . $VARTMP
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 cd ~/
 echo $PWD
 echo $PATH
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
 
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Ruby avec rbenv ${NORMAL}"
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
 
 git clone https://github.com/rbenv/rbenv.git ~/.rbenv
@@ -194,26 +195,26 @@ echo 'eval "$(rbenv init --no-rehash -)"' >> ~/.bashrc
 export PATH="~/.rbenv/shims:~/.rbenv/bin:$PATH"
 
 
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 cd ~/
 echo $PWD
 echo $PATH
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
 
 
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Ruby-build (plugin pour rbenv) ${NORMAL}"
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
 
 git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 check_command
 echo $PATH
 
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Ruby ${NORMAL}"
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
 
 rbenv install 2.7.4
@@ -221,22 +222,23 @@ check_command
 rbenv global 2.7.4
 check_command
 
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Bundler ${NORMAL}"
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
 
 gem install bundler
 check_command
 
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} Déploiement source schleuder-web ${NORMAL}"
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
 
 # Installation de Schleuder-web
 git clone https://0xacab.org/schleuder/schleuder-web.git $SCHLEUDER_WEB
 check_command
+echo "${yellow} $SCHLEUDER_WEB ${NORMAL}"
 cd $SCHLEUDER_WEB
 
 
@@ -246,9 +248,9 @@ cd $SCHLEUDER_WEB
 
 echo -e "${Red} installation de schleuder-web : ${NORMAL}"
 
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} Install ${NORMAL}"
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
 
 #bundle install --without development
@@ -264,10 +266,11 @@ echo -e "${RED_TEXT} bundle install ${NORMAL}"
 bundle install
 check_command
 
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} Creation SECRET_KEY_BASE ${NORMAL}"
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
+echo "${yellow} $PWD ${NORMAL}"
 export SECRET_KEY_BASE=$(bin/rails secret)
 check_command
 
@@ -276,9 +279,9 @@ echo -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" >>$VARTMP
 END_SWSA
         check_command
         
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Creation SCHLEUDER_TLS_FINGERPRINT ${NORMAL}"
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         sleep 5
         export SCHLEUDER_TLS_FINGERPRINT=$($SUDO  schleuder cert fingerprint|cut -d" " -f4)
         check_command
@@ -292,9 +295,9 @@ END_SWSA
         check_command
         
 
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Creation SCHLEUDER_API_KEY ${NORMAL}"
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         sleep 5
         export SCHLEUDER_API_KEY=$($SUDO  schleuder new_api_key)
         check_command
@@ -311,9 +314,9 @@ END_SWSA
 
 
 
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Var schleuder-web ${NORMAL}"
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         sleep 5
         . $VARTMP
         echo -e "[Service]
@@ -324,9 +327,9 @@ SCHLEUDER_TLS_FINGERPRINT=$SCHLEUDER_TLS_FINGERPRINT
 SECRET_KEY_BASE=$SECRET_KEY_BASE
 RAILS_ENV=production" | tee ${SCHLEUDER_WEB_VAR_DEFAULT}
 
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Service schleuder-web ${NORMAL}"
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
 
         echo -e "[Unit]
 Description=Schleuder Web
@@ -340,24 +343,24 @@ ExecStart=${SCHLEUDER_WEB}bin/bundle exec rails server
 [Install]
 WantedBy=multi-user.target" | $SUDO  tee ${SCHLEUDER_WEB_SERVICE}
 
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Setup ${NORMAL}"
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         sleep 5
         $SUDO -u $UTILISATEUR /bin/bash - <<"END_SWSB"
 
 bundle exec rake db:setup RAILS_ENV=production
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} Precompile ${NORMAL}"
-echo -e "${YELLOW} [==============================] ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
 
 RAILS_ENV=production bundle exec rake assets:precompile
 END_SWSB
         check_command
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Execution ${NORMAL}"
-        echo -e "${YELLOW} [==============================] ${NORMAL}"
+        echo -e "${yellow} [==============================] ${NORMAL}"
         sleep 5
 
         $SUDO systemctl enable schleuder-web.service 
@@ -365,8 +368,8 @@ END_SWSB
         $SUDO systemctl start schleuder-web.service 
         check_command  
         echo -e "${BLUE} Visit http://$(hostname -I|awk '{print $1}'):3000/${NORMAL}"
-        echo -e "${YELLOW} compte : root@localhost ${NORMAL}"
-        echo -e "${YELLOW} Password : slingit! ${NORMAL}"
+        echo -e "${yellow} compte : root@localhost ${NORMAL}"
+        echo -e "${yellow} Password : slingit! ${NORMAL}"
         $SUDO rm $VARTMP
         exit 0
 }
