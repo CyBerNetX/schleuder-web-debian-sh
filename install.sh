@@ -48,7 +48,7 @@ SCHLEUDER_WEB="/home/$UTILISATEUR/schleuder-web/"
 # Fonction pour vérifier si la commande a réussi
 check_command() {
     if [ $? -ne 0 ]; then
-        echo "Erreur: La commande a échoué. Arrêt de l'installation."
+        echo "Erreur ($?): La commande a échoué. Arrêt de l'installation."
         exit 1
     fi
 }
