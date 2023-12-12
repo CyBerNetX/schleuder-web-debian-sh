@@ -243,7 +243,7 @@ sleep 5
 # Installation de Schleuder-web
 git clone https://0xacab.org/schleuder/schleuder-web.git $SCHLEUDER_WEB
 check_command
-echo "${yellow} $SCHLEUDER_WEB ${NORMAL}"
+echo -e "${yellow} $SCHLEUDER_WEB ${NORMAL}"
 cd $SCHLEUDER_WEB
 
 
@@ -271,7 +271,7 @@ echo -e "${yellow} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} Creation SECRET_KEY_BASE ${NORMAL}"
 echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
-echo "${yellow} $PWD ${NORMAL}"
+echo -e "${yellow} $PWD ${NORMAL}"
 export SECRET_KEY_BASE=$(bin/rails secret)
 check_command
 
@@ -351,6 +351,7 @@ WantedBy=multi-user.target" | $SUDO  tee ${SCHLEUDER_WEB_SERVICE}
         $SUDO VARTMP=$VARTMP -i -u $UTILISATEUR <<"END_SWSB"
 
 . $VARTMP
+cd $SCHLEUDER_WEB
 bundle exec rake db:setup RAILS_ENV=production
 echo -e "${yellow} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} Precompile ${NORMAL}"
