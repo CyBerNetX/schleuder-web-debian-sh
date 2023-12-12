@@ -45,7 +45,13 @@ RED_TEXT=`echo "\033[31m"`
 Red=`echo "\033[0;31m"`
 UTILISATEUR=schleuder-web
 SCHLEUDER_WEB="/home/$UTILISATEUR/schleuder-web/"
-
+# Fonction pour vérifier si la commande a réussi
+check_command() {
+    if [ $? -ne 0 ]; then
+        echo "Erreur: La commande a échoué. Arrêt de l'installation."
+        exit 1
+    fi
+}
 VAROEF
 chmod 777 $VARTMP
 . $VARTMP
@@ -89,20 +95,20 @@ function main_schleuder(){
         sleep 5
 
         $SUDO apt-get update && $SUDO apt-get upgrade -y
-
+        check_command
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${Red} Installation des applications ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
         $SUDO apt-get install -y schleuder 
-
+        check_command
         
 
         $SUDO  sed -i "s/host: localhost/host: ${SCHLEUDER_API_HOST}/g"  ${SCHLEUDER}schleuder.yml
         $SUDO  sed -i "s/port: 4443/port: ${SCHLEUDER_API_PORT}/g"  ${SCHLEUDER}schleuder.yml
 
         $SUDO systemctl restart schleuder-api-daemon.service
-
+        check_command
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT}  Config postfix pour schleuder ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
@@ -142,8 +148,9 @@ root@$LISTS          root@$ORIGINDOMAIN
 BOF
 
         $SUDO postmap /etc/postfix/virtual_aliases
+        check_command
         $SUDO systemctl restart postfix
-
+        check_command
 }
 
 function main_schleuderweb(){
@@ -181,6 +188,7 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 
 git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+check_command
 echo 'export PATH="~/.rbenv/bin:$PATH"' >> ~/.bashrc
 echo 'eval "$(rbenv init --no-rehash -)"' >> ~/.bashrc
 export PATH="~/.rbenv/shims:~/.rbenv/bin:$PATH"
@@ -200,7 +208,7 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 
 git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
-
+check_command
 echo $PATH
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
@@ -209,7 +217,9 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 
 rbenv install 2.7.4
+check_command
 rbenv global 2.7.4
+check_command
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Bundler ${NORMAL}"
@@ -217,6 +227,7 @@ echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 
 gem install bundler
+check_command
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} Déploiement source schleuder-web ${NORMAL}"
@@ -225,6 +236,7 @@ sleep 5
 
 # Installation de Schleuder-web
 git clone https://0xacab.org/schleuder/schleuder-web.git $SCHLEUDER_WEB
+check_command
 cd $SCHLEUDER_WEB
 
 
@@ -242,29 +254,34 @@ sleep 5
 #bundle install --without development
 echo -e "${RED_TEXT} bundle update --bundler ${NORMAL}"
 bundle update --bundler
+check_command
 echo -e "${RED_TEXT} bundle set $SCHLEUDER_WEB ${NORMAL}"
 bundle config set --local path $SCHLEUDER_WEB
+check_command
 bundle config set --local without 'development'
+check_command
 echo -e "${RED_TEXT} bundle install ${NORMAL}"
 bundle install
+check_command
 
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} Creation SECRET_KEY_BASE ${NORMAL}"
 echo -e "${YELLOW} [==============================] ${NORMAL}"
 sleep 5
 export SECRET_KEY_BASE=$(bin/rails secret)
+check_command
 
 echo -e "${Red} SECRET_KEY_BASE=$SECRET_KEY_BASE${NORMAL}"
 echo -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" >>$VARTMP
 END_SWSA
-        
+        check_command
         
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Creation SCHLEUDER_TLS_FINGERPRINT ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
         export SCHLEUDER_TLS_FINGERPRINT=$($SUDO  schleuder cert fingerprint|cut -d" " -f4)
-
+        check_command
 
         echo -e "${Red} 
         SCHLEUDER_TLS_FINGERPRINT=$SCHLEUDER_TLS_FINGERPRINT${NORMAL}"
@@ -272,7 +289,7 @@ END_SWSA
        
         
         $SUDO systemctl restart schleuder-api-daemon.service
-        
+        check_command
         
 
         echo -e "${YELLOW} [==============================] ${NORMAL}"
@@ -280,7 +297,7 @@ END_SWSA
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
         export SCHLEUDER_API_KEY=$($SUDO  schleuder new_api_key)
-        
+        check_command
         
         $SUDO sed -i "s/# shared:/shared:\n  api_key: ${SCHLEUDER_API_KEY}/g" ${SCHLEUDER_WEB}config/secrets.yml
 
@@ -337,16 +354,16 @@ sleep 5
 
 RAILS_ENV=production bundle exec rake assets:precompile
 END_SWSB
-
+        check_command
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Execution ${NORMAL}"
         echo -e "${YELLOW} [==============================] ${NORMAL}"
         sleep 5
 
         $SUDO systemctl enable schleuder-web.service 
-
+        check_command
         $SUDO systemctl start schleuder-web.service 
-               
+        check_command  
         echo -e "${BLUE} Visit http://$(hostname -I|awk '{print $1}'):3000/${NORMAL}"
         echo -e "${YELLOW} compte : root@localhost ${NORMAL}"
         echo -e "${YELLOW} Password : slingit! ${NORMAL}"
