@@ -173,7 +173,7 @@ function main_schleuderweb(){
         $SUDO chown :gems /var/lib/gems/
         $SUDO chmod g+sw /var/lib/gems/
         #---------- user schleuder ---------#
-        $SUDO VARTMP=$VARTMP -u $UTILISATEUR  /bin/bash - <<"END_SWSA"
+        $SUDO VARTMP=$VARTMP -u $UTILISATEUR  /bin/bash -l - <<"END_SWSA"
 
 . $VARTMP
 echo -e "${yellow} [==============================] ${NORMAL}"
@@ -213,9 +213,9 @@ check_command
 echo $PATH
 END_SWSA
 
-$SUDO VARTMP=$VARTMP -u $UTILISATEUR /bin/bash - <<"END_SWSC"
+        $SUDO VARTMP=$VARTMP -u $UTILISATEUR /bin/bash -l - <<"END_SWSC"
 
-. ./$VARTMP
+. $VARTMP
 echo -e "${yellow} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Ruby ${NORMAL}"
 echo -e "${yellow} [==============================] ${NORMAL}"
@@ -347,8 +347,9 @@ WantedBy=multi-user.target" | $SUDO  tee ${SCHLEUDER_WEB_SERVICE}
         echo -e "${RED_TEXT} Setup ${NORMAL}"
         echo -e "${yellow} [==============================] ${NORMAL}"
         sleep 5
-        $SUDO -u $UTILISATEUR  /bin/bash - <<"END_SWSB"
+        $SUDO -u $UTILISATEUR  /bin/bash -l - <<"END_SWSB"
 
+. $VARTMP
 bundle exec rake db:setup RAILS_ENV=production
 echo -e "${yellow} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} Precompile ${NORMAL}"
