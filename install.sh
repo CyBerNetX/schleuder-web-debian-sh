@@ -173,7 +173,7 @@ function main_schleuderweb(){
         $SUDO chown :gems /var/lib/gems/
         $SUDO chmod g+sw /var/lib/gems/
         #---------- user schleuder ---------#
-        $SUDO VARTMP=$VARTMP -u $UTILISATEUR /bin/bash - <<"END_SWSA"
+        $SUDO VARTMP=$VARTMP -u $UTILISATEUR - <<"END_SWSA"
 
 . $VARTMP
 echo -e "${yellow} [==============================] ${NORMAL}"
@@ -211,7 +211,11 @@ sleep 5
 git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 check_command
 echo $PATH
+END_SWSA
 
+$SUDO VARTMP=$VARTMP -u $UTILISATEUR - <<"END_SWSC"
+
+. ./$VARTMP
 echo -e "${yellow} [==============================] ${NORMAL}"
 echo -e "${RED_TEXT} # Installation de Ruby ${NORMAL}"
 echo -e "${yellow} [==============================] ${NORMAL}"
@@ -240,10 +244,6 @@ git clone https://0xacab.org/schleuder/schleuder-web.git $SCHLEUDER_WEB
 check_command
 echo "${yellow} $SCHLEUDER_WEB ${NORMAL}"
 cd $SCHLEUDER_WEB
-
-
-
-
 
 
 echo -e "${Red} installation de schleuder-web : ${NORMAL}"
@@ -276,7 +276,7 @@ check_command
 
 echo -e "${Red} SECRET_KEY_BASE=$SECRET_KEY_BASE${NORMAL}"
 echo -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" >>$VARTMP
-END_SWSA
+END_SWSC
         check_command
         
         echo -e "${yellow} [==============================] ${NORMAL}"
@@ -347,7 +347,7 @@ WantedBy=multi-user.target" | $SUDO  tee ${SCHLEUDER_WEB_SERVICE}
         echo -e "${RED_TEXT} Setup ${NORMAL}"
         echo -e "${yellow} [==============================] ${NORMAL}"
         sleep 5
-        $SUDO -u $UTILISATEUR /bin/bash - <<"END_SWSB"
+        $SUDO -u $UTILISATEUR - <<"END_SWSB"
 
 bundle exec rake db:setup RAILS_ENV=production
 echo -e "${yellow} [==============================] ${NORMAL}"
