@@ -117,11 +117,11 @@ function main_schleuder(){
         [[ -z $(grep schleuder /etc/postfix/master.cf) ]] && (echo -e "schleuder  unix  -       n       n       -       -       pipe\n  flags=DRhu user=schleuder argv=$SCHLEUDER_BIN work \${recipient}"|$SUDO  tee -a  /etc/postfix/master.cf)
 
         [[ -z $(grep schleuder /etc/postfix/main.cf) ]] && ( echo -e " \n
-        schleuder_destination_recipient_limit = 1\n\
-        virtual_mailbox_domains = sqlite:/etc/postfix/schleuder_domain_sqlite.cf\n\
-        virtual_transport       = schleuder\n\
-        virtual_alias_maps      = hash:/etc/postfix/virtual_aliases\n\
-        virtual_mailbox_maps    = sqlite:/etc/postfix/schleuder_list_sqlite.cf"|$SUDO  tee -a /etc/postfix/main.cf)
+schleuder_destination_recipient_limit = 1\n\
+virtual_mailbox_domains = sqlite:/etc/postfix/schleuder_domain_sqlite.cf\n\
+virtual_transport       = schleuder\n\
+virtual_alias_maps      = hash:/etc/postfix/virtual_aliases\n\
+virtual_mailbox_maps    = sqlite:/etc/postfix/schleuder_list_sqlite.cf"|$SUDO  tee -a /etc/postfix/main.cf)
 
         [[ ! -e /etc/postfix/schleuder_domain_sqlite.cf ]] && cat << EOF |$SUDO  tee -a /etc/postfix/schleuder_domain_sqlite.cf 
 dbpath = /var/lib/schleuder/db.sqlite
