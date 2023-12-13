@@ -276,7 +276,7 @@ export SECRET_KEY_BASE=$(bin/rails secret)
 check_command
 
 echo -e "${Red} SECRET_KEY_BASE=$SECRET_KEY_BASE${NORMAL}"
-echo -e "SECRET_KEY_BASE=$SECRET_KEY_BASE" >>$VARTMP
+echo -e "export SECRET_KEY_BASE=$SECRET_KEY_BASE" >>$VARTMP
 END_SWSC
         check_command
         
@@ -289,7 +289,7 @@ END_SWSC
 
         echo -e "${Red} 
         SCHLEUDER_TLS_FINGERPRINT=$SCHLEUDER_TLS_FINGERPRINT${NORMAL}"
-       
+       echo -e "export SCHLEUDER_TLS_FINGERPRINT=$SCHLEUDER_TLS_FINGERPRINT" >>$VARTMP
        
         
         $SUDO systemctl restart schleuder-api-daemon.service
@@ -306,7 +306,7 @@ END_SWSC
         $SUDO sed -i "s/# shared:/shared:\n  api_key: ${SCHLEUDER_API_KEY}/g" ${SCHLEUDER_WEB}config/secrets.yml
 
         echo -e "${Red} SCHLEUDER_API_KEY=$SCHLEUDER_API_KEY${NORMAL}"
-
+        echo -e "export SCHLEUDER_API_KEY=$SCHLEUDER_API_KEY" >>$VARTMP
 
 
         $SUDO sed -i "s/  valid_api_keys:/  valid_api_keys:\n    - ${SCHLEUDER_API_KEY}/g" ${SCHLEUDER}schleuder.yml
