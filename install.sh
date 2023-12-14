@@ -384,6 +384,8 @@ END_SWSB
         check_command
         $SUDO systemctl enable schleuder-web.service 
         check_command
+        $SUDO systemctl restart schleuder-api-daemon.service
+        check_command
         $SUDO systemctl start schleuder-web.service 
         check_command  
         echo -e "${BLUE} Visit http://$(hostname -I|awk '{print $1}'):3000/${NORMAL}"
