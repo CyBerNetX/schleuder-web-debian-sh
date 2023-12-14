@@ -35,6 +35,7 @@ SCHLEUDER_BIN=$(whereis -b schleuder|cut -d" " -f2)
 SCHLEUDER="/etc/schleuder/"
 SCHLEUDER_WEB_VAR_DEFAULT="/etc/default/schleuder-web"
 SCHLEUDER_WEB_SERVICE="/etc/systemd/system/schleuder-web.service"
+SCHLEUDER_WEB_LAUNCHER="/etc/systemd/system/launcher_schleuder-web.sh"
 SCHLEUDER_API_HOST="127.0.0.1"
 SCHLEUDER_API_PORT="4443"
 # default constant values
@@ -320,6 +321,14 @@ END_SWSC
         echo -e "${yellow} [==============================] ${NORMAL}"
         sleep 5
         . $VARTMP
+
+        echo "export SCHLEUDER_API_HOST=$SCHLEUDER_API_HOST" >> /home/$UTILISATEUR/.profile
+        echo "export SCHLEUDER_API_PORT=$SCHLEUDER_API_PORT" >> /home/$UTILISATEUR/.profile
+        echo "export SCHLEUDER_API_KEY=$SCHLEUDER_API_KEY" >> /home/$UTILISATEUR/.profile
+        echo "export SCHLEUDER_TLS_FINGERPRINT=$SCHLEUDER_TLS_FINGERPRINT" >> /home/$UTILISATEUR/.profile
+        echo "export SECRET_KEY_BASE=$SECRET_KEY_BASE" >> /home/$UTILISATEUR/.profile
+
+
         echo -e "[Service]
 SCHLEUDER_API_HOST=$SCHLEUDER_API_HOST
 SCHLEUDER_API_PORT=$SCHLEUDER_API_PORT
@@ -331,6 +340,11 @@ RAILS_ENV=production" | tee ${SCHLEUDER_WEB_VAR_DEFAULT}
         echo -e "${yellow} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Service schleuder-web ${NORMAL}"
         echo -e "${yellow} [==============================] ${NORMAL}"
+        echo -e "#!/bin/bash
+. /home/${UTILISATEUR}/.profile
+cd ${SCHLEUDER_WEB}
+./bin/bundle exec rails server" | $SUDO  tee ${SCHLEUDER_WEB_LAUNCHER}
+        $SUDO chmod 755 ${SCHLEUDER_WEB_LAUNCHER}
 
         echo -e "[Unit]
 Description=Schleuder Web
@@ -340,10 +354,11 @@ After=local-fs.target network.target
 EnvironmentFile=${SCHLEUDER_WEB_VAR_DEFAULT}
 WorkingDirectory=${SCHLEUDER_WEB}
 User=$UTILISATEUR
-ExecStart=${SCHLEUDER_WEB}bin/bundle exec rails server  
+ExecStart=${SCHLEUDER_WEB_LAUNCHER}  
 [Install]
 WantedBy=multi-user.target" | $SUDO  tee ${SCHLEUDER_WEB_SERVICE}
 
+        $SUDO chmod 755 ${SCHLEUDER_WEB_SERVICE}
         echo -e "${yellow} [==============================] ${NORMAL}"
         echo -e "${RED_TEXT} Setup ${NORMAL}"
         echo -e "${yellow} [==============================] ${NORMAL}"
@@ -365,7 +380,8 @@ END_SWSB
         echo -e "${RED_TEXT} Execution ${NORMAL}"
         echo -e "${yellow} [==============================] ${NORMAL}"
         sleep 5
-
+        $SUDO systemctl daemon-reload
+        check_command
         $SUDO systemctl enable schleuder-web.service 
         check_command
         $SUDO systemctl start schleuder-web.service 
