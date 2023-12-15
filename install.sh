@@ -322,11 +322,6 @@ END_SWSC
         sleep 5
         . $VARTMP
 
-        echo "export SCHLEUDER_API_HOST=$SCHLEUDER_API_HOST" >> /home/$UTILISATEUR/.profile
-        echo "export SCHLEUDER_API_PORT=$SCHLEUDER_API_PORT" >> /home/$UTILISATEUR/.profile
-        echo "export SCHLEUDER_API_KEY=$SCHLEUDER_API_KEY" >> /home/$UTILISATEUR/.profile
-        echo "export SCHLEUDER_TLS_FINGERPRINT=$SCHLEUDER_TLS_FINGERPRINT" >> /home/$UTILISATEUR/.profile
-        echo "export SECRET_KEY_BASE=$SECRET_KEY_BASE" >> /home/$UTILISATEUR/.profile
 
 
         echo -e "[Service]
