@@ -343,7 +343,7 @@ cd ${SCHLEUDER_WEB}
 
         echo -e "[Unit]
 Description=Schleuder Web
-After=local-fs.target network.target
+After=local-fs.target network.target schleuder-api-daemon.service
 
 [Service]
 EnvironmentFile=${SCHLEUDER_WEB_VAR_DEFAULT}
