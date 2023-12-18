@@ -117,13 +117,15 @@ function main_schleuder(){
         sleep 5
 
         [[ -z $(grep schleuder /etc/postfix/master.cf) ]] && (echo -e "schleuder  unix  -       n       n       -       -       pipe\n  flags=DRhu user=schleuder argv=$SCHLEUDER_BIN work \${recipient}"|$SUDO  tee -a  /etc/postfix/master.cf)
-
-        [[ -z $(grep schleuder /etc/postfix/main.cf) ]] && ( echo -e " \n
+        [[ -z $(grep sqlite:/etc/postfix/schleuder_domain_sqlite.cf /etc/postfix/main.cf) ]] && (sed -i "s#\(virtual_mailbox_domains = \)\(.*\)#\1\2,sqlite:/etc/postfix/schleuder_domain_sqlite.cf#g" /etc/postfix/main.cf)
+        [[ -z $(grep hash:/etc/postfix/virtual_aliases /etc/postfix/main.cf) ]] && (sed -i "s#\(virtual_alias_maps = \)\(.*\)#\1\2,hash:/etc/postfix/virtual_aliases#g" /etc/postfix/main.cf) 
+        [[ -z $(grep sqlite:/etc/postfix/schleuder_list_sqlite.cf /etc/postfix/main.cf) ]] && (sed -i "s#\(virtual_mailbox_maps = \)\(.*\)#\1\2,sqlite:/etc/postfix/schleuder_list_sqlite.cf#g" /etc/postfix/main.cf)
+        
+        [[ -z $(grep schleuder_destination_recipient_limit /etc/postfix/main.cf) ]] && ( echo -e " \n
+# Schleuder config
 schleuder_destination_recipient_limit = 1\n\
-virtual_mailbox_domains = sqlite:/etc/postfix/schleuder_domain_sqlite.cf\n\
 virtual_transport       = schleuder\n\
-virtual_alias_maps      = hash:/etc/postfix/virtual_aliases\n\
-virtual_mailbox_maps    = sqlite:/etc/postfix/schleuder_list_sqlite.cf"|$SUDO  tee -a /etc/postfix/main.cf)
+\n"|$SUDO  tee -a /etc/postfix/main.cf)
 
         [[ ! -e /etc/postfix/schleuder_domain_sqlite.cf ]] && cat << EOF |$SUDO  tee -a /etc/postfix/schleuder_domain_sqlite.cf 
 dbpath = /var/lib/schleuder/db.sqlite
