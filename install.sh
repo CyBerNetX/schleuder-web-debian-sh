@@ -117,6 +117,7 @@ function main_schleuder(){
         sleep 5
 
         [[ -z $(grep schleuder /etc/postfix/master.cf) ]] && (echo -e "schleuder  unix  -       n       n       -       -       pipe\n  flags=DRhu user=schleuder argv=$SCHLEUDER_BIN work \${recipient}"|$SUDO  tee -a  /etc/postfix/master.cf)
+        
         [[ -z $(grep sqlite:/etc/postfix/schleuder_domain_sqlite.cf /etc/postfix/main.cf) ]] && (sed -i "s#\(virtual_mailbox_domains = \)\(.*\)#\1\2,sqlite:/etc/postfix/schleuder_domain_sqlite.cf#g" /etc/postfix/main.cf)
         [[ -z $(grep hash:/etc/postfix/virtual_aliases /etc/postfix/main.cf) ]] && (sed -i "s#\(virtual_alias_maps = \)\(.*\)#\1\2,hash:/etc/postfix/virtual_aliases#g" /etc/postfix/main.cf) 
         [[ -z $(grep sqlite:/etc/postfix/schleuder_list_sqlite.cf /etc/postfix/main.cf) ]] && (sed -i "s#\(virtual_mailbox_maps = \)\(.*\)#\1\2,sqlite:/etc/postfix/schleuder_list_sqlite.cf#g" /etc/postfix/main.cf)
@@ -235,7 +236,7 @@ echo -e "${RED_TEXT} # Installation de Bundler ${NORMAL}"
 echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
 
-gem install bundler
+gem install bundler -v 2.4.22
 check_command
 
 echo -e "${yellow} [==============================] ${NORMAL}"
