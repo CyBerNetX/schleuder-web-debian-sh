@@ -389,7 +389,7 @@ END_SWSB
         check_command
         $SUDO systemctl start schleuder-web.service 
         check_command  
-        YNHBIN=$(whereis -b yunohost|cut -d":" -f2|cut -d" " -f1)
+        YNHBIN=$(whereis -b yunohost|cut -d":" -f2|cut -d" " -f2)
         [[ ! -z $YNHBIN ]] && $SUDO $YNHBIN firewall allow TCP 3000 
         echo -e "${BLUE} Visit http://$(hostname -I|awk '{print $1}'):3000/${NORMAL}"
         echo -e "${yellow} compte : $(grep superadmin ${SCHLEUDER}schleuder.yml |cut -d":" -f2) ${NORMAL}"
