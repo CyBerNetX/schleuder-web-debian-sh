@@ -134,17 +134,17 @@ virtual_transport       = schleuder\n\
         [[ ! -e /etc/postfix/schleuder_domain_sqlite.cf ]] && cat << EOF |$SUDO  tee -a /etc/postfix/schleuder_domain_sqlite.cf 
 dbpath = /var/lib/schleuder/db.sqlite
 query = select distinct substr(email, instr(email, '@') + 1) from lists
-where email like '%%%s'
+        where email like '%%%s'
 EOF
 
         [[ ! -e /etc/postfix/schleuder_list_sqlite.cf ]] && cat <<AOF |$SUDO  tee -a /etc/postfix/schleuder_list_sqlite.cf 
 dbpath = /var/lib/schleuder/db.sqlite
 query = select 'present' from lists
-where email = '%s'
-or    email = replace('%s', '-bounce@', '@')
-or    email = replace('%s', '-owner@', '@')
-or    email = replace('%s', '-request@', '@')
-or    email = replace('%s', '-sendkey@', '@')
+        where email = '%s'
+        or    email = replace('%s', '-bounce@', '@')
+        or    email = replace('%s', '-owner@', '@')
+        or    email = replace('%s', '-request@', '@')
+        or    email = replace('%s', '-sendkey@', '@')
 AOF
 
 
