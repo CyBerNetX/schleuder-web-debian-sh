@@ -108,7 +108,7 @@ function main_schleuder(){
         $SUDO apt-get install -y schleuder 
         check_command
         
-        $SUDO  sed -i "s/superadmin: root@localhost/superadmin: root@$ORIGINDOMAIN"  ${SCHLEUDER}schleuder.yml
+        $SUDO  sed -i "s/superadmin: root@localhost/superadmin: root@$ORIGINDOMAIN/g"  ${SCHLEUDER}schleuder.yml
         $SUDO  sed -i "s/host: localhost/host: ${SCHLEUDER_API_HOST}/g"  ${SCHLEUDER}schleuder.yml
         $SUDO  sed -i "s/port: 4443/port: ${SCHLEUDER_API_PORT}/g"  ${SCHLEUDER}schleuder.yml
 
@@ -392,7 +392,7 @@ END_SWSB
         YNHBIN=$(whereis -b yunohost|cut -d":" -f2|cut -d" " -f2)
         [[ ! -z $YNHBIN ]] && $SUDO $YNHBIN firewall allow TCP 3000 
         echo -e "${BLUE} Visit http://$(hostname -I|awk '{print $1}'):3000/${NORMAL}"
-        echo -e "${yellow} compte : $(grep superadmin ${SCHLEUDER}schleuder.yml |cut -d":" -f2) ${NORMAL}"
+        echo -e "${yellow} compte : $($SUDO grep superadmin ${SCHLEUDER}schleuder.yml |cut -d":" -f2) ${NORMAL}"
         echo -e "${yellow} Password : slingit! ${NORMAL}"
         $SUDO rm $VARTMP
         DURATION=$[ $(date +%s) - ${START} ]
