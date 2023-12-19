@@ -395,6 +395,8 @@ END_SWSB
         echo -e "${yellow} compte : $(grep superadmin ${SCHLEUDER}schleuder.yml |cut -d":" -f2) ${NORMAL}"
         echo -e "${yellow} Password : slingit! ${NORMAL}"
         $SUDO rm $VARTMP
+        DURATION=$[ $(date +%s) - ${START} ]
+        echo "temps d'execution : ${DURATION}"
         exit 0
 }
 
@@ -413,5 +415,3 @@ done
 [[ "$no_args" == "true" ]] && { usage; exit 1; }
 main_schleuder
 main_schleuderweb
-DURATION=$[ $(date +%s) - ${START} ]
-echo "temps d'execution : ${DURATION}"
