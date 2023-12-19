@@ -6,6 +6,7 @@
 # $SUDO systemctl status schleuder-api-daemon.service
 # $SUDO systemctl status schleuder-web.service 
 #
+START="$(date +%s)"
 LOGDIR="./log"
 LOG="$LOGDIR/Installation_schleuder-web_$(date +%F_%H%M%S).log"
 SUDO=/usr/bin/sudo
@@ -39,7 +40,7 @@ SCHLEUDER_WEB_LAUNCHER="/etc/systemd/system/launcher_schleuder-web.sh"
 SCHLEUDER_API_HOST="127.0.0.1"
 SCHLEUDER_API_PORT="4443"
 # default constant values
-[[ ! -e $VARTMP ]] && cat <<"VAROEF" > $VARTMP
+cat <<"VAROEF" > $VARTMP
 NORMAL=`echo "\033[m"`
 YELLOW=`echo "\033[33m"`
 yellow="\033[01;33m"
@@ -51,6 +52,8 @@ SCHLEUDER_WEB="/home/$UTILISATEUR/schleuder-web/"
 check_command() {
     if [ $? -ne 0 ]; then
         echo "Erreur ($?): La commande a échoué. Arrêt de l'installation."
+        DURATION=$[ $(date +%s) - ${START} ]
+        echo " temps de fonctionnement : ${DURATION}"
         exit 1
     fi
 }
@@ -408,3 +411,5 @@ done
 [[ "$no_args" == "true" ]] && { usage; exit 1; }
 main_schleuder
 main_schleuderweb
+DURATION=$[ $(date +%s) - ${START} ]
+echo "temps d'execution : ${DURATION}"
