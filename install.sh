@@ -53,8 +53,7 @@ check_command() {
     if [ $? -ne 0 ]; then
         echo "Erreur ($?): La commande a échoué. Arrêt de l'installation."
         DURATION=$[ $(date +%s) - ${START} ]
-        echo " temps de fonctionnement : ${DURATION}"
-        echo "$(($DURATION / 60)) minutes et $(($DURATION % 60)) secondes."
+        TZ=UTC0 printf 'temps de fonctionement du script : %(%H:%M:%S)T\n' ${DURATION}
         exit 1
     fi
 }
@@ -109,7 +108,7 @@ function main_schleuder(){
         $SUDO apt-get install -y schleuder 
         check_command
         
-        $SUDO  sed -i "s/superadmin: root@localhost/superadmin: root@$ORIGINDOMAIN/g"  ${SCHLEUDER}schleuder.yml
+        #$SUDO  sed -i "s/superadmin: root@localhost/superadmin: root@$ORIGINDOMAIN/g"  ${SCHLEUDER}schleuder.yml
         $SUDO  sed -i "s/host: localhost/host: ${SCHLEUDER_API_HOST}/g"  ${SCHLEUDER}schleuder.yml
         $SUDO  sed -i "s/port: 4443/port: ${SCHLEUDER_API_PORT}/g"  ${SCHLEUDER}schleuder.yml
 
@@ -397,8 +396,7 @@ END_SWSB
         echo -e "${yellow} Password : slingit! ${NORMAL}"
         $SUDO rm $VARTMP
         DURATION=$[ $(date +%s) - ${START} ]
-        echo "temps d'execution : ${DURATION}"
-        echo "$(($DURATION / 60)) minutes et $(($DURATION % 60)) secondes."
+        TZ=UTC0 printf 'temps de fonctionement du script : %(%H:%M:%S)T\n' ${DURATION}
         exit 0
 }
 
