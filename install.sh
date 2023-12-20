@@ -390,7 +390,7 @@ END_SWSB
         $SUDO systemctl start schleuder-web.service 
         check_command  
         YNHBIN=$(whereis -b yunohost|cut -d":" -f2|cut -d" " -f2)
-        [[ ! -z $YNHBIN ]] && $SUDO $YNHBIN firewall allow TCP 3000 
+        [[ ! -z $YNHBIN ]] && $SUDO $YNHBIN app install redirect -l Schleuder -a "domain=$LISTS&path=/&redirect_type=public_proxy&redirect_path=http://127.0.0.1:3000"
         echo -e "${BLUE} Visit http://$(hostname -I|awk '{print $1}'):3000/${NORMAL}"
         echo -e "${yellow} compte : $($SUDO grep superadmin ${SCHLEUDER}schleuder.yml |cut -d":" -f2) ${NORMAL}"
         echo -e "${yellow} Password : slingit! ${NORMAL}"
