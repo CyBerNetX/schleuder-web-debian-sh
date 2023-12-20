@@ -54,6 +54,7 @@ check_command() {
         echo "Erreur ($?): La commande a échoué. Arrêt de l'installation."
         DURATION=$[ $(date +%s) - ${START} ]
         echo " temps de fonctionnement : ${DURATION}"
+        echo "$(($DURATION / 60)) minutes et $(($DURATION % 60)) secondes."
         exit 1
     fi
 }
@@ -397,6 +398,7 @@ END_SWSB
         $SUDO rm $VARTMP
         DURATION=$[ $(date +%s) - ${START} ]
         echo "temps d'execution : ${DURATION}"
+        echo "$(($DURATION / 60)) minutes et $(($DURATION % 60)) secondes."
         exit 0
 }
 
