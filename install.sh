@@ -9,6 +9,7 @@
 START="$(date +%s)"
 LOGDIR="./log"
 LOG="$LOGDIR/Installation_schleuder-web_$(date +%F_%H%M%S).log"
+[ "$DEBUG" == 'true' ] && set -x
 SUDO=/usr/bin/sudo
 #
 NORMAL=`echo "\033[m"`
@@ -28,7 +29,8 @@ blue="[debug]\033[01;34m"
 purple="\033[01;35m"
 cyan="\033[01;36m"
 
-
+MAINCF="/etc/postfix/main.cf"
+DOVCOTECONFD=/etc/dovecot/conf.d/10-master.conf
 export VARTMP=/tmp/schleuderweb.tmp
 
 SCHLEUDER_BIN=$(whereis -b schleuder|cut -d" " -f2)
@@ -88,6 +90,36 @@ function usage(){
         exit 0  
 }
 
+function confpostfix(){
+  if [[ ! -z $(grep virtual_transport ${MAINCF}|grep dovecot) ]] 
+  then
+    [[ -z $(grep "dovecot:lmtp" ${MAINCF}) ]] && sed -i "s#\(virtual_transport\) = \(dovecot\)#\1 = \2:lmtp#g" ${MAINCF}
+  
+    [[ ! -e  ${DOVECOTCONFD} ]] && cat <<"EOFDOVECOT" | $SUDO tee ${DOVECOTCONFD}
+service lmtp {
+  unix_listener /var/spool/postfix/private/dovecot-lmtp {
+    mode = 0600
+    user = postfix
+    group = postfix
+  }
+}
+EOFDOVECOT
+
+    [[ -z $(grep "schleuder_transport" ${MAINCF} ) ]] && cat<<"EOFMAINSCHLEUDER" |$SUDO  tee -a ${MAINCF}
+schleuder_transport = schleuder
+schleuder_destination_recipient_limit = 1
+EOFMAINSCHLEUDER
+
+  elif [[ ! -e $(grep virtual_transport ${MAINCF} ) ]] 
+  then
+    cat <<"EOFMAINPOSTFIX" |$SUDO tee -a ${MAINCF}
+virtual_transport = schleuder
+schleuder_destination_recipient_limit = 1
+EOFMAINPOSTFIX
+  
+  fi
+}
+
 
 function main_schleuder(){
         echo -e "$logo"
@@ -125,11 +157,7 @@ function main_schleuder(){
         [[ -z $(grep hash:/etc/postfix/virtual_aliases /etc/postfix/main.cf) ]] && (sed -i "s#\(virtual_alias_maps = \)\(.*\)#\1\2,hash:/etc/postfix/virtual_aliases#g" /etc/postfix/main.cf) 
         [[ -z $(grep sqlite:/etc/postfix/schleuder_list_sqlite.cf /etc/postfix/main.cf) ]] && (sed -i "s#\(virtual_mailbox_maps = \)\(.*\)#\1\2,sqlite:/etc/postfix/schleuder_list_sqlite.cf#g" /etc/postfix/main.cf)
         
-        [[ -z $(grep schleuder_destination_recipient_limit /etc/postfix/main.cf) ]] && ( echo -e " \n
-# Schleuder config
-schleuder_destination_recipient_limit = 1\n\
-virtual_transport       = schleuder\n\
-\n"|$SUDO  tee -a /etc/postfix/main.cf)
+        confpostfix
 
         [[ ! -e /etc/postfix/schleuder_domain_sqlite.cf ]] && cat << EOF |$SUDO  tee -a /etc/postfix/schleuder_domain_sqlite.cf 
 dbpath = /var/lib/schleuder/db.sqlite
