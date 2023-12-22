@@ -268,8 +268,9 @@ echo -e "${RED_TEXT} # Installation de Bundler ${NORMAL}"
 echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
 
-#gem install bundler -v 2.4.22
-gem install bundler 
+echo ":ipv4_fallback_enabled: true" | $SUDO tee -aplu ~/.gemrc
+
+gem install bundler -v 2.4.22
 check_command
 
 echo -e "${yellow} [==============================] ${NORMAL}"
