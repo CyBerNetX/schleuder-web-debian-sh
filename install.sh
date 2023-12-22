@@ -185,6 +185,7 @@ BOF
 
         $SUDO postmap /etc/postfix/virtual_aliases
         check_command
+
         $SUDO systemctl restart postfix
         check_command
 }
@@ -267,7 +268,8 @@ echo -e "${RED_TEXT} # Installation de Bundler ${NORMAL}"
 echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
 
-gem install bundler -v 2.4.22
+#gem install bundler -v 2.4.22
+gem install bundler 
 check_command
 
 echo -e "${yellow} [==============================] ${NORMAL}"
