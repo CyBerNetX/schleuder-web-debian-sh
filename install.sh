@@ -271,7 +271,7 @@ sleep 5
 echo ":ipv4_fallback_enabled: true" | $SUDO tee -a ~/.gemrc
 
 #gem install bundler -v 2.4.22
-gem install bundler:2.4.22
+gem install bundler -V 2.5.3
 check_command
 
 echo -e "${yellow} [==============================] ${NORMAL}"
