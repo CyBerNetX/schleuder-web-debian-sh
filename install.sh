@@ -6,7 +6,7 @@
 # $SUDO systemctl status schleuder-api-daemon.service
 # $SUDO systemctl status schleuder-web.service 
 #
-START="$(date +%s)"
+export START="$(date +%s)"
 LOGDIR="./log"
 LOG="$LOGDIR/Installation_schleuder-web_$(date +%F_%H%M%S).log"
 [ "$DEBUG" == 'true' ] && set -x
