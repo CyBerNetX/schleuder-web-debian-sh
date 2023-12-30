@@ -91,6 +91,26 @@ function usage(){
 }
 
 function confpostfix(){
+
+  [[ -z $(grep schleuder /etc/postfix/master.cf) ]] && (echo -e "schleuder  unix  -       n       n       -       -       pipe\n  flags=DRhu user=schleuder argv=$SCHLEUDER_BIN work \${recipient}"|$SUDO  tee -a  /etc/postfix/master.cf)
+
+  [[ -z $(grep sqlite:/etc/postfix/schleuder_domain_sqlite.cf /etc/postfix/main.cf) ]] && (sed -i "s#\(virtual_mailbox_domains = \)\(.*\)#\1\2,sqlite:/etc/postfix/schleuder_domain_sqlite.cf#g" /etc/postfix/main.cf)
+  [[ ! -e /etc/postfix/schleuder_domain_sqlite.cf ]] && cat <<"EOFSCHLDRDMN" | $SUDO tee /etc/postfix/schleuder_domain_sqlite.cf
+dbpath = /var/lib/schleuder/db.sqlite
+query = select distinct substr(email, instr(email, '@') + 1) from lists
+        where email like '%%%s'
+EOFSCHLDRDMN
+  [[ -z $(grep hash:/etc/postfix/virtual_aliases /etc/postfix/main.cf) ]] && (sed -i "s#\(virtual_alias_maps = \)\(.*\)#\1\2,hash:/etc/postfix/virtual_aliases#g" /etc/postfix/main.cf) 
+  [[ -z $(grep sqlite:/etc/postfix/schleuder_list_sqlite.cf /etc/postfix/main.cf) ]] && (sed -i "s#\(virtual_mailbox_maps = \)\(.*\)#\1\2,sqlite:/etc/postfix/schleuder_list_sqlite.cf#g" /etc/postfix/main.cf)
+  [[ ! -e /etc/postfix/schleuder_list_sqlite.cf ]] && cat <<"EOFSCHLDRLST" | $SUDO tee /etc/postfix/schleuder_list_sqlite.cf
+dbpath = /var/lib/schleuder/db.sqlite
+query = select 'present' from lists
+          where email = '%s'
+          or    email = replace('%s', '-bounce@', '@')
+          or    email = replace('%s', '-owner@', '@')
+          or    email = replace('%s', '-request@', '@')
+          or    email = replace('%s', '-sendkey@', '@')
+EOFSCHLDRLST
   if [[ ! -z $(grep virtual_transport ${MAINCF}|grep dovecot) ]] 
   then
     [[ -z $(grep "dovecot:lmtp" ${MAINCF}) ]] && sed -i "s#\(virtual_transport\) = \(dovecot\)#\1 = \2:lmtp#g" ${MAINCF}
@@ -151,12 +171,7 @@ function main_schleuder(){
         echo -e "${yellow} [==============================] ${NORMAL}"
         sleep 5
 
-        [[ -z $(grep schleuder /etc/postfix/master.cf) ]] && (echo -e "schleuder  unix  -       n       n       -       -       pipe\n  flags=DRhu user=schleuder argv=$SCHLEUDER_BIN work \${recipient}"|$SUDO  tee -a  /etc/postfix/master.cf)
-        
-        [[ -z $(grep sqlite:/etc/postfix/schleuder_domain_sqlite.cf /etc/postfix/main.cf) ]] && (sed -i "s#\(virtual_mailbox_domains = \)\(.*\)#\1\2,sqlite:/etc/postfix/schleuder_domain_sqlite.cf#g" /etc/postfix/main.cf)
-        [[ -z $(grep hash:/etc/postfix/virtual_aliases /etc/postfix/main.cf) ]] && (sed -i "s#\(virtual_alias_maps = \)\(.*\)#\1\2,hash:/etc/postfix/virtual_aliases#g" /etc/postfix/main.cf) 
-        [[ -z $(grep sqlite:/etc/postfix/schleuder_list_sqlite.cf /etc/postfix/main.cf) ]] && (sed -i "s#\(virtual_mailbox_maps = \)\(.*\)#\1\2,sqlite:/etc/postfix/schleuder_list_sqlite.cf#g" /etc/postfix/main.cf)
-        
+
         confpostfix
 
         [[ ! -e /etc/postfix/schleuder_domain_sqlite.cf ]] && cat << EOF |$SUDO  tee -a /etc/postfix/schleuder_domain_sqlite.cf 
