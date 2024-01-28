@@ -163,7 +163,7 @@ function main_schleuder(){
         $SUDO apt-get install -y schleuder 
         check_command
         
-        [[ -z $SUPERADMIN ]] && echo "${yellow} SUPERADMIN = root@localhost  ${NORMAL}" ||  $SUDO  sed -i "s/superadmin: root@localhost/superadmin: $SUPERADMIN/g"  ${SCHLEUDER}schleuder.yml
+        [[ -z $SUPERADMIN ]] && echo "${yellow} SUPERADMIN = root@localhost  ${NORMAL}" || $SUDO  sed -i "s/superadmin: root@localhost/superadmin: $SUPERADMIN/g"  ${SCHLEUDER}schleuder.yml
         $SUDO  sed -i "s/host: localhost/host: ${SCHLEUDER_API_HOST}/g"  ${SCHLEUDER}schleuder.yml
         $SUDO  sed -i "s/port: 4443/port: ${SCHLEUDER_API_PORT}/g"  ${SCHLEUDER}schleuder.yml
 
