@@ -83,6 +83,9 @@ function usage(){
         echo "$0 [ -l liste.exemple.org | -o exemple.org ]"
         echo " -l : liste domaine"
         echo " -o : domaine original "
+        echo " -a : superadmin mail "
+        echo "    => compte a creer sur la pages d authentification de schleuder web "
+        echo "    => si aucun mail est donné :defaut = root@localhost  mot de passe : slingit! " 
         echo ""
         echo "$0 -h "
         echo "    help"
@@ -160,7 +163,7 @@ function main_schleuder(){
         $SUDO apt-get install -y schleuder 
         check_command
         
-        #$SUDO  sed -i "s/superadmin: root@localhost/superadmin: root@$ORIGINDOMAIN/g"  ${SCHLEUDER}schleuder.yml
+        [[ -z $SUPERADMIN ]] && echo "${yellow} SUPERADMIN = root@localhost  ${NORMAL}" ||  $SUDO  sed -i "s/superadmin: root@localhost/superadmin: $SUPERADMIN/g"  ${SCHLEUDER}schleuder.yml
         $SUDO  sed -i "s/host: localhost/host: ${SCHLEUDER_API_HOST}/g"  ${SCHLEUDER}schleuder.yml
         $SUDO  sed -i "s/port: 4443/port: ${SCHLEUDER_API_PORT}/g"  ${SCHLEUDER}schleuder.yml
 
@@ -440,7 +443,8 @@ END_SWSB
         [[ ! -z $YNHBIN ]] && $SUDO $YNHBIN app install redirect -l Schleuder -a "domain=$LISTS&path=/&redirect_type=reverseproxy&init_main_permission=visitors&target=http://127.0.0.1:3000"
         echo -e "${BLUE} Visit http://$(hostname -I|awk '{print $1}'):3000/${NORMAL}"
         echo -e "${yellow} compte : $($SUDO grep superadmin ${SCHLEUDER}schleuder.yml |cut -d":" -f2) ${NORMAL}"
-        echo -e "${yellow} Password : slingit! ${NORMAL}"
+        [[  -n $SUPERADMIN ]] && echo -e "${yellow} compte a creer sur la pages d authentification de schleuder web ${NORMAL}" || echo -e "${yellow} Password : slingit! ${NORMAL}"
+        echo -e "${yellow} compte a creer sur la pages d authentification de schleuder web ${NORMAL}"
         $SUDO rm $VARTMP
         DURATION=$[ $(date +%s) - ${START} ]
         TZ=UTC0 printf 'temps de fonctionement du script : %(%H:%M:%S)T\n' ${DURATION}
@@ -448,12 +452,13 @@ END_SWSB
 }
 
 no_args="true"
-while getopts l:o:h option
+while getopts l:o:a:h option
 do 
   case "${option}"
         in
         l) LISTS=${OPTARG};;
         o) ORIGINDOMAIN=${OPTARG};;
+        a) SUPERADMIN=${OPTARG};;
         h) usage ;;
         *) usage ;;
   esac
