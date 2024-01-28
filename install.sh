@@ -83,9 +83,9 @@ function usage(){
         echo "$0 [ -l liste.exemple.org | -o exemple.org ]"
         echo " -l : liste domaine"
         echo " -o : domaine original "
-        echo " -a : superadmin mail "
-        echo "    => compte a creer sur la pages d authentification de schleuder web "
-        echo "    => si aucun mail est donné :defaut = root@localhost  mot de passe : slingit! " 
+       # echo " -a : superadmin mail "
+       # echo "    => compte a creer sur la pages d authentification de schleuder web "
+       # echo "    => si aucun mail est donné :defaut = root@localhost  mot de passe : slingit! " 
         echo ""
         echo "$0 -h "
         echo "    help"
@@ -163,7 +163,7 @@ function main_schleuder(){
         $SUDO apt-get install -y schleuder 
         check_command
         
-        [[ -z $SUPERADMIN ]] && echo "${yellow} SUPERADMIN = root@localhost  ${NORMAL}" || $SUDO  sed -i "s/superadmin: root@localhost/superadmin: $SUPERADMIN/g"  ${SCHLEUDER}schleuder.yml
+        #[[ -z $SUPERADMIN ]] && echo "${yellow} SUPERADMIN = root@localhost  ${NORMAL}" || $SUDO  sed -i "s/superadmin: root@localhost/superadmin: $SUPERADMIN/g"  ${SCHLEUDER}schleuder.yml
         $SUDO  sed -i "s/host: localhost/host: ${SCHLEUDER_API_HOST}/g"  ${SCHLEUDER}schleuder.yml
         $SUDO  sed -i "s/port: 4443/port: ${SCHLEUDER_API_PORT}/g"  ${SCHLEUDER}schleuder.yml
 
@@ -458,7 +458,7 @@ do
         in
         l) LISTS=${OPTARG};;
         o) ORIGINDOMAIN=${OPTARG};;
-        a) SUPERADMIN=${OPTARG};;
+       # a) SUPERADMIN=${OPTARG};;
         h) usage ;;
         *) usage ;;
   esac
