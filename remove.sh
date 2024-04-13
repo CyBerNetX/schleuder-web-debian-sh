@@ -1,4 +1,8 @@
 #!/usr/bin/bash
+# 
+# curl -sL https://raw.githubusercontent.com/CyBerNetX/schleuder-web-debian-sh/testdev/remove.sh |sudo bash -s --
+# 
+
 SUDO=/usr/bin/sudo
 export START="$(date +%s)"
 
@@ -36,6 +40,6 @@ $SUDO VARTMP=$VARTMP -i -u $UTILISATEUR  <<"END_SWUSC"
 . $VARTMP
 cd $SCHLEUDER_WEB
 
-bundle list | ruby -e 'ARGF.readlines[1..-1].each {|l| g = l.split(" ");  puts "Removing #{g[1]}"; `gem uninstall --force #{g[1]} -v #{g[2].gsub(/\(|\)/, "")}`; }'
+bin/bundle list | ruby -e 'ARGF.readlines[1..-1].each {|l| g = l.split(" ");  puts "Removing #{g[1]}"; `gem uninstall --force #{g[1]} -v #{g[2].gsub(/\(|\)/, "")}`; }'
 END_SWUSC
 
