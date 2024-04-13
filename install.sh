@@ -62,7 +62,7 @@ check_command() {
 VAROEF
 chmod 777 $VARTMP
 . $VARTMP
-cat $VARTMP
+#cat $VARTMP
 sleep 5
 
 logo="${cyan}Author :${green} 
