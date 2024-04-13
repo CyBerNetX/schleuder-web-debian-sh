@@ -227,46 +227,46 @@ function main_schleuderweb(){
         $SUDO chown :gems /var/lib/gems/
         $SUDO chmod g+sw /var/lib/gems/
         #---------- user schleuder ---------#
-#         $SUDO VARTMP=$VARTMP -i -u $UTILISATEUR  <<"END_SWSA"
+        $SUDO VARTMP=$VARTMP -i -u $UTILISATEUR  <<"END_SWSA"
 
-# . $VARTMP
-# echo -e "${yellow} [==============================] ${NORMAL}"
-# cd ~/
-# echo $PWD
-# echo $PATH
-# echo -e "${yellow} [==============================] ${NORMAL}"
-# sleep 5
+. $VARTMP
+echo -e "${yellow} [==============================] ${NORMAL}"
+cd ~/
+echo $PWD
+echo $PATH
+echo -e "${yellow} [==============================] ${NORMAL}"
+sleep 5
 
-# echo -e "${yellow} [==============================] ${NORMAL}"
-# echo -e "${RED_TEXT} # Installation de Ruby avec rbenv ${NORMAL}"
-# echo -e "${yellow} [==============================] ${NORMAL}"
-# sleep 5
+echo -e "${yellow} [==============================] ${NORMAL}"
+echo -e "${RED_TEXT} # Installation de Ruby avec rbenv ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
+sleep 5
 
-# git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-# check_command
-# echo 'PATH="$PATH:~/.rbenv/bin"' >> ~/.profile
-# echo 'export PATH' >> ~/.profile
-# echo 'eval "$(rbenv init --no-rehash -)"' >> ~/.profile
-# export PATH="~/.rbenv/shims:~/.rbenv/bin:$PATH"
-
-
-# echo -e "${yellow} [==============================] ${NORMAL}"
-# cd ~/
-# echo $PWD
-# echo $PATH
-# echo -e "${yellow} [==============================] ${NORMAL}"
-# sleep 5
+git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+check_command
+echo 'PATH="$PATH:~/.rbenv/bin"' >> ~/.profile
+echo 'export PATH' >> ~/.profile
+echo 'eval "$(rbenv init --no-rehash -)"' >> ~/.profile
+export PATH="~/.rbenv/shims:~/.rbenv/bin:$PATH"
 
 
-# echo -e "${yellow} [==============================] ${NORMAL}"
-# echo -e "${RED_TEXT} # Installation de Ruby-build (plugin pour rbenv) ${NORMAL}"
-# echo -e "${yellow} [==============================] ${NORMAL}"
-# sleep 5
+echo -e "${yellow} [==============================] ${NORMAL}"
+cd ~/
+echo $PWD
+echo $PATH
+echo -e "${yellow} [==============================] ${NORMAL}"
+sleep 5
 
-# git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
-# check_command
-# echo $PATH
-# END_SWSA
+
+echo -e "${yellow} [==============================] ${NORMAL}"
+echo -e "${RED_TEXT} # Installation de Ruby-build (plugin pour rbenv) ${NORMAL}"
+echo -e "${yellow} [==============================] ${NORMAL}"
+sleep 5
+
+git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+check_command
+echo $PATH
+END_SWSA
         
         $SUDO VARTMP=$VARTMP -i -u $UTILISATEUR  <<"END_SWSC"
 
@@ -276,8 +276,8 @@ echo -e "${RED_TEXT} # Installation de Ruby ${NORMAL}"
 echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
 
-# rbenv install 2.7.4
-# check_command
+rbenv install 2.7.4
+check_command
 # rbenv global 2.7.4
 # check_command
 
