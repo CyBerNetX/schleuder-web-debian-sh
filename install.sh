@@ -219,7 +219,7 @@ function main_schleuderweb(){
         
         $SUDO useradd -r -m -d /home/$UTILISATEUR -s /bin/bash -c "Schleuder Web GPG-mailing list manager mode web" $UTILISATEUR
         $SUDO apt install -y autoconf patch build-essential rustc libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev libxml2-dev libsqlite3-dev openssl
-        $SUDO apt install -y curl git  gem
+        $SUDO apt install -y curl git
         $SUDO groupadd -f gems
         $SUDO usermod -aG gems $UTILISATEUR
         
