@@ -40,6 +40,11 @@ $SUDO VARTMP=$VARTMP -i -u $UTILISATEUR  <<"END_SWUSC"
 . $VARTMP
 cd $SCHLEUDER_WEB
 
-bin/bundle list | ruby -e 'ARGF.readlines[1..-1].each {|l| g = l.split(" ");  puts "Removing #{g[1]}"; `gem uninstall --force #{g[1]} -v #{g[2].gsub(/\(|\)/, "")}`; }'
+# bin/bundle list | ruby -e 'ARGF.readlines[1..-1].each {|l| g = l.split(" ");  puts "Removing #{g[1]}"; `gem uninstall --force #{g[1]} -v #{g[2].gsub(/\(|\)/, "")}`; }'
+
+~/.rbenv/versions/2.7.4/bin/bundle  list | ruby -e 'ARGF.readlines[1..-1].each {|l| g = l.split(" ");  puts "Removing #{g[1]}"; `gem uninstall --force #{g[1]} -v #{g[2].gsub(/\(|\)/, "")}`; }'
+check_command
 END_SWUSC
 
+DURATION=$[ $(date +%s) - ${START} ]
+TZ=UTC0 printf 'temps de fonctionement du script : %(%H:%M:%S)T\n' ${DURATION}
