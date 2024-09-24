@@ -1,4 +1,8 @@
 #!/bin/bash
+# git clone https://github.com/CyBerNetX/schleuder-web-debian-sh.git
+# cd schleuder-web-debian-sh
+# sudo bash ./install.sh -o ynh.local -l lists.local 
+#
 #
 # curl -sL https://raw.githubusercontent.com/CyBerNetX/schleuder-web-debian-sh/main/install.sh |bash -s -- -h
 # http://192.168.1.123:3000
