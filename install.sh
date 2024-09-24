@@ -215,7 +215,7 @@ function main_schleuderweb(){
         # Nom de l'utilisateur spécifié en argument
         
         $SUDO useradd -r -m -d /home/$UTILISATEUR -s /bin/bash -c "Schleuder Web GPG-mailing list manager mode web" $UTILISATEUR
-        $SUDO apt install -y autoconf patch build-essential rustc libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev libxml2-dev libsqlite3-dev openssl
+        $SUDO apt install -y autoconf patch build-essential rustc libssl-dev libyaml-dev libreadline6-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev libxml2-dev libsqlite3-dev openssl postfix-sqlite
         $SUDO apt install -y curl git
         $SUDO groupadd -f gems
         $SUDO usermod -aG gems $UTILISATEUR
@@ -295,7 +295,7 @@ echo -e "${yellow} [==============================] ${NORMAL}"
 sleep 5
 
 # Installation de Schleuder-web
-git clone https://0xacab.org/schleuder/schleuder-web.git $SCHLEUDER_WEB
+git clone  --branch  debian/bullseye/3.6.0   https://0xacab.org/schleuder/schleuder-web.git $SCHLEUDER_WEB
 check_command
 echo -e "${yellow} $SCHLEUDER_WEB ${NORMAL}"
 cd $SCHLEUDER_WEB
@@ -437,7 +437,7 @@ END_SWSB
         $SUDO systemctl start schleuder-web.service 
         check_command  
         YNHBIN=$(whereis -b yunohost|cut -d":" -f2|cut -d" " -f2)
-        [[ ! -z $YNHBIN ]] && $SUDO $YNHBIN app install redirect -l Schleuder -a "domain=$LISTS&path=/&redirect_type=reverseproxy&init_main_permission=visitors&target=http://127.0.0.1:3000"
+        [[ ! -z $YNHBIN ]] && $SUDO $YNHBIN app install redirect -l Schleuder -a "domain=$ORIGINDOMAIN&path=/schleuder&redirect_type=reverseproxy&init_main_permission=visitors&target=http://127.0.0.1:3000"
         echo -e "${BLUE} Visit http://$(hostname -I|awk '{print $1}'):3000/${NORMAL}"
         echo -e "${yellow} compte : $($SUDO grep superadmin ${SCHLEUDER}schleuder.yml |cut -d":" -f2) ${NORMAL}"
         echo -e "${yellow} Password : slingit! ${NORMAL}"
